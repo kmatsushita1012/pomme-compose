@@ -196,9 +196,48 @@ PommeButton(onClick = onAdd) {
 | ButtonStyle.automatic | PommeButtonStyle.Automatic |
 | plain / borderless | PommeButtonStyle.Plain / Borderless |
 | bordered / borderedProminent | PommeButtonStyle.Bordered / BorderedProminent |
+| glass | PommeButtonStyle.Glass（初期必須） |
+| glassProminent | PommeButtonStyle.GlassProminent（後続検討） |
 | ButtonRole.destructive / cancel | PommeButtonRole.Destructive / Cancel |
 
 Automatic は配置文脈に応じた外観で Plain の別名ではない。role は意味と表示であり、確認ダイアログ・画面遷移を自動実行しない。通常操作には role 未指定を基本として検討する。Form / Toolbar 用の別コンポーネントを作らない。スタイルの初期採用範囲は詳細設計で整理する。
+
+### Glass スタイル（初期必須）
+
+参照：[SwiftUI glass](https://developer.apple.com/documentation/swiftui/primitivebuttonstyle/glass)、[glassProminent](https://developer.apple.com/documentation/swiftui/primitivebuttonstyle/glassprominent)。
+
+PommeButtonStyle.Glass は SwiftUI の glass に対応する名称だが、初期の描画は軽量なグラスモーフィズムとし、Liquid Glass 自体の再現を要求しない。
+
+```kotlin
+// 任意の画面で明示的に Glass を指定
+PommeButton("操作", style = PommeButtonStyle.Glass, onClick = onAction)
+
+// Toolbar 内では Automatic（未指定）を Glass に解決
+PommeScaffold {
+    navigationTitle("編集")
+    content { /* ... */ }
+    toolbar {
+        PommeToolbarItem(TopBarLeading) {
+            PommeButton("キャンセル", onClick = onCancel)
+        }
+        PommeToolbarItem(TopBarTrailing) {
+            PommeButton("保存", onClick = onSave)
+        }
+    }
+}
+```
+
+| 配置文脈 | style | 解決される外観 |
+| --- | --- | --- |
+| Toolbar 内 | 未指定 / Automatic | Glass |
+| Toolbar 内 | 明示した具体スタイル | 指定されたスタイル |
+| Toolbar 外 | Glass | Glass |
+| Toolbar 外 | 未指定 / Automatic | 従来の文脈依存の既定スタイル |
+
+- 半透明の表面、控えめな輪郭・光沢、奥行き感を目指す。形状はラベルの内容に適応し、文字・アイコンの視認性とタップ領域を維持する。色や形状の具体値は詳細設計で決定する。
+- 実際の背景ぼかし、反射、屈折、複数要素の融合、GlassProminent、汎用 glassEffect は初期必須ではない。対応 Android バージョンに応じた描画・性能の検証とフォールバックは詳細設計で扱う。
+- Toolbar の背景そのものや他の UI コンポーネントは今回のガラス化の対象外。Toolbar 専用 Button を新設せず、Button 自身のスタイル解決を利用する。
+- Light / Dark、通常・無効、異なる背景、Toolbar 内の自動適用と明示スタイルの上書きを Compose Preview と必要なテストで確認する。
 
 ### 入力
 
