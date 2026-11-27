@@ -12,7 +12,7 @@
 ## 対象範囲
 
 - Android / Jetpack Compose。Kotlin Multiplatform や iOS での直接動作は初期対象外。
-- テーマ、入力系、リスト系（List / Form / Section / Row）、スクリーン系（Scaffold / Toolbar）を主要対象とする。
+- テーマ、入力系、リスト系（List / Form / Section）、スクリーン系（Scaffold / Toolbar）を主要対象とする。
 - ダイアログ、アイコン等は cupertino-compose の依存解消と汎用性に必要な範囲で対象を精査する。
 - ライブラリ本体と独立したサンプルアプリを用意する。
 - 対応コンポーネントの内訳は [コンポーネント要件](components.md) を参照する。
@@ -30,8 +30,10 @@
 - 見た目だけでなく、利用側のコードも SwiftUI のように構造と意図を簡潔に表現できること。
 - 公開 UI コンポーネント名は一律 Pomme 接頭辞を付ける。テーマは PommeTheme、カラースキームは PommeColorScheme とする。
 - 特に PommeForm / PommeList / PommeSection と PommeScaffold / PommeToolbar は Compose の Scope を活用し、親子関係や配置の文脈に沿って宣言的に構築できるよう設計する。
+- PommeForm / PommeSection では Pomme の入力・操作コンポーネントや標準 Compose の Text、Row、Column、Box 等を直接配置し、原則として各直接の子レイアウトを一行として扱えること。専用の PommeRow は公開対象外とする。
+- 複数要素を一行にまとめる場合は標準のレイアウトコンポーネントを利用する。行の余白、最低高さ、区切り線等の標準装飾は親が管理し、個別調整が必要な場合は Modifier 拡張を優先して検討する。
 - 呼び出し側がレイアウトの内部構造や装飾を手動で組み立て直す必要を減らす。標準 Compose のコンテンツを組み合わせる柔軟性も確保する。
-- 詳細な DSL 構文、Scope 型、公開メソッド、コンテンツの登録方式は未確定とする。
+- 詳細な DSL 構文、Scope 型、公開メソッド、コンテンツの登録方式、List の遅延描画と直接配置の両立方法は未確定とする。
 
 ## テーマ・カラースキーム
 

@@ -18,6 +18,8 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 
 - 公開 UI コンポーネントは例外なく Pomme 接頭辞で統一する。Compose 標準の Text、Row、Column、Box、Spacer 等に不要な独自ラッパーを作らない。
 - Form / List / Section、Scaffold / Toolbar の詳細設計では Compose の receiver Scope を活用し、SwiftUI のように構造や配置意図を宣言できる型安全な DSL を優先する。具体的な IF は承認済み詳細設計に従う。
+- PommeForm / PommeSection の直接の子を原則一行として扱う。PommeRow 等の専用公開ラッパーを必須化・追加しない。複数要素は標準 Row / Column / Box 等でまとめ、行の標準装飾は親と内部共通基盤へ集約する。
+- Scope は構造・配置意図、CompositionLocal は表示文脈、Modifier は個別の外観・レイアウト、Composable は UI の表現に使用する。配置先別の同種コンポーネントや、Scope ごとの入力コンポーネントの重複定義を避ける。
 - Scope に業務状態や処理を持たせない。再コンポーズによる二重登録、条件付き要素の更新漏れ、外側 Scope の誤用などを防ぐ。過剰な独自 DSL を作らず Compose 標準機能と整合させる。
 - Jetpack Compose 標準 API を優先し、要件に適合する Material 3 の機能は再利用する。cupertino-compose には依存しない。
 - 既存の標準機能を独自実装に置き換えるだけの変更を避ける。局所的な問題解決のために全体の設計規則を壊さない。
@@ -54,6 +56,7 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 - [ ] 未承認の公開 IF や UI 仕様の追加がない。
 - [ ] 公開 UI コンポーネント名は Pomme 接頭辞で統一されている。
 - [ ] Form / List / Section、Scaffold / Toolbar の Scope 設計は宣言的で、誤用・再コンポーズ・動的な更新を考慮している（対象変更時）。
+- [ ] Form / Section で直接配置が可能で、専用の行ラッパーを要求せず、標準レイアウトと親の行装飾を分離している（対象変更時）。
 - [ ] アプリ固有の処理や不要な依存を持ち込んでいない。
 - [ ] 共通化・責務分離が適切で、不要コードが残っていない。
 - [ ] 対象コンポーネントの Compose Preview を用意・更新し、主要状態と両テーマを確認できる。

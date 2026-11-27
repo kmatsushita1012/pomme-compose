@@ -21,6 +21,8 @@
 - 特定アプリの業務ロジック、状態管理基盤、ルーティングを持ち込まない。
 - Pomme が独自に提供する公開 UI コンポーネントは例外なく Pomme 接頭辞で統一する。Compose 標準の Text、Row、Column、Box、Spacer 等はそのまま利用し、不要なラッパーを作らない。
 - Form / List / Section および Scaffold / Toolbar は SwiftUI に近い宣言的な構成を目指し、Compose の receiver Scope を活用した型安全な DSL を優先して設計する。具体的な Scope や DSL の IF は詳細設計で決める。
+- PommeForm / PommeSection では直接の子コンテンツを原則として行として扱う。行専用の公開コンポーネント PommeRow は提供せず、複数要素を一行にまとめる場合は標準の Row / Column / Box 等を利用する。
+- Scope は構造・配置意図、CompositionLocal は表示文脈、Modifier は個別の外観・レイアウト、Composable は実際の UI を担う。行の標準装飾は親と内部共通基盤が管理する。
 - 要件と詳細設計を区別する。未承認の公開インターフェース（以下 IF）や仕様を実装者の判断で確定・追加しない。
 - UI コンポーネントの新規実装・変更時は、対象コンポーネントの Compose Preview を必ず用意・更新する。サンプルアプリやテストだけで代替してはならない。
 - 開発ルールの詳細と完了条件は開発スキルを参照する。
