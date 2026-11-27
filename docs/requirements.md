@@ -27,7 +27,8 @@
 
 ## 宣言的な画面構築
 
-- 見た目だけでなく、利用側のコードも SwiftUI のように構造と意図を簡潔に表現できること。
+- 見た目だけでなく、利用側のコードも SwiftUI のように構造と意図を簡潔に表現できること。対応する公開 API の名称、意味、構成、文脈による既定スタイルを維持し、独自の同義語を導入しない。
+- [API 要件・利用イメージ](api-design.md) の命名方針と構造を遵守する。コード例は設計の基準であり、未確定の関数シグネチャを承認するものではない。
 - 公開 UI コンポーネント名は一律 Pomme 接頭辞を付ける。テーマは PommeTheme、カラースキームは PommeColorScheme とする。
 - 特に PommeForm / PommeList / PommeSection と PommeScaffold / PommeToolbar は Compose の Scope を活用し、親子関係や配置の文脈に沿って宣言的に構築できるよう設計する。
 - PommeForm / PommeSection では Pomme の入力・操作コンポーネントや標準 Compose の Text、Row、Column、Box 等を直接配置し、原則として各直接の子レイアウトを一行として扱えること。専用の PommeRow は公開対象外とする。

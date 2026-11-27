@@ -46,6 +46,7 @@ pomme-compose/
 - コンポーネント名は原則として SwiftUI の対応概念に合わせる。スクリーンの構成要素など直接対応しないものは責務に沿った名称とする。具体的な一覧は [コンポーネント要件](components.md) を参照する。
 - テーマとカラースキームは PommeTheme / PommeColorScheme とする。
 - Text、Row、Column、Box、Spacer 等の Compose 標準 API はそのまま利用する。Row / Column / Box はそれぞれ SwiftUI の HStack / VStack / ZStack に相当する汎用レイアウトとして利用する。PommeRow は公開対象外とし、独自のスタック代替も作らない。
+- 公開型・enum 値・引数・スタイル・Modifier 相当の名称も SwiftUI の対応 API を優先する。例：PommeToolbarPlacement.TopBarLeading / TopBarTrailing。詳細は [API 要件・利用イメージ](api-design.md) を参照する。
 - 上記は公開コンポーネントの規則であり、内部実装や DSL 内の補助メソッドまで一律に同じ接頭辞を付けることを要求しない。それらの名称は詳細設計で定める。
 
 ## Scope を活用した宣言的 UI の設計方針
@@ -65,7 +66,7 @@ SwiftUI のように、親の文脈の中で子の構造や配置意図を宣言
 ### Scaffold / Toolbar
 
 - Scaffold は画面本体と上部・下部のバーなどの構造を宣言できるようにし、Toolbar はタイトルと操作要素の配置意図を宣言できる構造を目指す。
-- SwiftUI の toolbar / ToolbarItem の考え方を参考に、各操作要素がどこに配置されるかを意味的に表現できるようにする。利用側が毎回 Row / Box で配置や余白を組み直すことを前提にしない。
+- SwiftUI の toolbar / ToolbarItem の考え方を参考に、各操作要素の配置先を明示できるようにする。PommeToolbarPlacement の初期値域は TopBarLeading / TopBarTrailing / Principal / BottomBar。Principal は固定の中央領域として扱う。操作の意味による自動配置は初期対象外。利用側が毎回 Row / Box で配置や余白を組み直すことを前提にしない。
 - Toolbar の構成と Scaffold のレイアウト責務を分離する。特定の画面遷移方式や保存・キャンセル操作を Scope に組み込まない。
 - 一般的な画面だけでなく、地図等の任意のコンテンツを組み合わせられること。
 
@@ -83,7 +84,7 @@ SwiftUI のように、親の文脈の中で子の構造や配置意図を宣言
 - Scope はコンテンツの構成・配置の文脈を表現するために利用する。業務状態の保有やグローバルな登録機構に転用しない。
 - 再コンポーズによる二重登録・古いコンテンツの残留、条件分岐や動的要素の更新漏れ、状態や要素の同一性の破壊を防ぐ。
 - Compose の標準的な状態管理・描画方式を尊重する。型安全性のためだけに過剰な DSL や不要な階層を増やさない。
-- Scope 型名、receiver の型、関数シグネチャ、DSL 構文、項目の登録・描画方式、Toolbar の具体的な配置分類は詳細設計で決める。本節は具体 IF の承認ではない。
+- Scope 型名、receiver の型、関数シグネチャ、DSL 構文、項目の登録・描画方式、Toolbar の具体的なレイアウト・配置解決方式は詳細設計で決める（初期の配置名称は確定済み）。本節は具体 IF の承認ではない。
 
 ## サンプルアプリ
 

@@ -1,0 +1,231 @@
+# SwiftUI 準拠の API 要件・利用イメージ
+
+開発者向け。SwiftUI の外観だけでなく、利用側の宣言的な構造、語彙、責務、文脈に応じた挙動を設計の基準とする。
+
+本資料の命名規則・必須の挙動・初期範囲は遵守する。コード例は具体的な利用イメージであり、最終的なシグネチャ、Scope 型、オーバーロード、内部実装を確定するものではない。対応候補は実装の必須要件に含めない。
+
+## 1. 公開 API の命名原則
+
+- SwiftUI の対応 API の公式名称を参照する。コンポーネント名だけでなく、型名、enum の値、引数、スタイル、Modifier 相当の操作まで対応を維持する。
+- 独自の公開 UI コンポーネントと対応する独自公開型は Pomme 接頭辞を付ける。Kotlin の型・enum は PascalCase、関数・引数は lowerCamelCase。既存の確定名は維持する。
+- SwiftUI の topBarLeading を Leading / Left / Start、borderedProminent を Filled / Primary といった独自の同義語へ変えない。
+- SwiftUI で区別される style（外観）、role（操作の意味）、placement（配置）、selection（選択値）、label（ラベル）、prompt（入力案内）は混同しない。
+- Compose 標準 Text / Row / Column / Box / Spacer / Icon、Modifier、状態ホイスティングをそのまま活用する。SwiftUI の Binding や ViewBuilder の仕組み自体を再実装する必要はない。Binding は値と変更コールバックに対応させる。
+- 対応する SwiftUI API がない場合のみ、責務に即した名称を採用する。PommeScaffold は Compose の画面ホストであり NavigationStack の代替ではない。
+- SwiftUI の API をすべて実装することは目標ではない。必要な機能を選び、採用した概念の命名・挙動を揃える。
+- SwiftUI との差異が避けられない場合は、対応する公式 API、技術的な理由、利用側への影響、代替案を設計資料に記載し、合意する。
+
+## 2. Scaffold / Toolbar
+
+参照：[ToolbarItemPlacement](https://developer.apple.com/documentation/swiftui/toolbaritemplacement)、[principal](https://developer.apple.com/documentation/swiftui/toolbaritemplacement/principal)、[ToolbarPlacement](https://developer.apple.com/documentation/swiftui/toolbarplacement)。
+
+### 配置（初期範囲・名称確定）
+
+| SwiftUI の対応名 | PommeToolbarPlacement | Pomme での配置 |
+| --- | --- | --- |
+| topBarLeading | TopBarLeading | 上部バーの論理的開始側 |
+| topBarTrailing | TopBarTrailing | 上部バーの論理的終了側 |
+| principal | Principal | 上部バーの中央領域 |
+| bottomBar | BottomBar | 下部ツールバー |
+
+PommeToolbarPlacement は PommeToolbarItem の配置先を指定する enum とする。SwiftUI の ToolbarItemPlacement に対応する（SwiftUI の ToolbarPlacement はバー自体を指定する別概念）。Principal は Pomme では固定の中央領域として扱い、自動的な意味解決はしない。
+
+automatic、confirmationAction、cancellationAction、destructiveAction、primaryAction、navigation 等の意味的配置、自動配置、キーボード用・他プラットフォーム用の配置は初期対象外。配置は利用者が明示する。追加は別途要件を合意した場合のみ。
+
+### 利用イメージ
+
+```kotlin
+PommeScaffold(navigationTitle = "基本情報") {
+    content {
+        PommeForm {
+            PommeSection {
+                PommeTextField("名称", text = name, onTextChange = onNameChange)
+                PommeToggle("公開する", isOn = published, onIsOnChange = onPublishedChange)
+            }
+        }
+    }
+
+    PommeToolbar {
+        PommeToolbarItem(placement = PommeToolbarPlacement.TopBarLeading) {
+            PommeButton("キャンセル", onClick = onCancel)
+        }
+        PommeToolbarItem(placement = PommeToolbarPlacement.TopBarTrailing) {
+            PommeButton("保存", onClick = onSave)
+        }
+    }
+}
+```
+
+- Scaffold の Scope で画面本体と Toolbar を宣言し、Toolbar の Scope で配置ごとのアイテムを宣言する。表示される操作は通常の Composable とする。
+- タイトルは navigationTitle に対応する概念。Principal のカスタムコンテンツとの優先関係は詳細設計で定義する。
+- 同じ配置への複数アイテム、条件付き表示、Toolbar の省略、地図等の任意のコンテンツを扱う。
+- 配置、タイトルの中央揃え、長いタイトル、RTL、Insets、システムバー、IME の整合は親が管理する。利用側に Row / Box で Toolbar を組み直させない。
+- 戻る・保存・キャンセルボタンを自動生成しない。配置は業務操作や画面遷移を実行しない。
+- navigationBarTitleDisplayMode（Automatic / Inline / Large）や ToolbarItemGroup は必要性を確認してから採用する。採用時の名称は SwiftUI に合わせる。
+
+## 3. Form / List / Section
+
+参照：[Form](https://developer.apple.com/documentation/swiftui/form)、[Section](https://developer.apple.com/documentation/swiftui/section)、[Lists](https://developer.apple.com/documentation/swiftui/lists)。
+
+```kotlin
+PommeForm {
+    PommeSection(
+        header = { Text("基本情報") },
+        footer = { Text("公開情報を編集できます") }
+    ) {
+        PommeTextField("名称", text = name, onTextChange = onNameChange)
+        PommeToggle("通知", isOn = notified, onIsOnChange = onNotifiedChange)
+
+        Row {
+            Text("バージョン")
+            Spacer(Modifier.weight(1f))
+            Text(version)
+        }
+
+        Column {
+            Text("タイトル")
+            Text("説明")
+        }
+    }
+
+    if (canDelete) {
+        PommeSection {
+            PommeButton("削除", role = PommeButtonRole.Destructive, onClick = onDelete)
+        }
+    }
+}
+```
+
+- Pomme の入力・操作コンポーネント、Compose 標準 Text、任意の Composable を直接配置できること。PommeRow や入力専用の行ラッパーは作らない。
+- 直接の子レイアウトを原則一行とし、Row / Column / Box 内の要素はまとまった一行とする。Section 外の直接配置も自然に扱えるよう、暗黙のグループ化を対象 iOS に照らして設計する。
+- Section の header / footer は任意とし、行と分けて描画する。行の高さは内容に追従し、背景、角丸、余白、最低行高、区切り線を親が管理する。空、単一行、複数行、条件分岐、長文・フォント倍率を検証する。
+- Form と List で行装飾・Section の意味を共有する。Form の入力フォーカスや IME が再コンポーズで失われないこと。
+
+### スタイルと個別調整
+
+| SwiftUI の語彙 | 対応名称・意味 |
+| --- | --- |
+| listStyle(.plain) | PommeListStyle.Plain（初期必須） |
+| listStyle(.insetGrouped) | PommeListStyle.InsetGrouped（初期必須） |
+| listStyle(.automatic / .grouped) | PommeListStyle.Automatic / Grouped（候補） |
+| formStyle(.automatic / .grouped) | PommeFormStyle.Automatic / Grouped（明示指定は候補、標準 Form は grouped 相当） |
+| listRowInsets | 行の内側余白（候補） |
+| listRowBackground | 行背景（候補） |
+| listRowSeparator | 区切り線の表示（候補） |
+| listRowSeparatorTint | 区切り線の色（候補） |
+
+行単位の調整は Modifier 拡張を優先して検討し、採用する場合は listRowInsets 等の対応名を用いる。通常の padding / background とは異なり、親に行装飾の指定を伝えるものとして設計する。具体的な伝達方法と適用範囲は検証が必要。
+
+### 動的 List の利用イメージ
+
+```kotlin
+PommeList(style = PommeListStyle.InsetGrouped) {
+    PommeSection(header = { Text("町一覧") }) {
+        items(districts, key = { it.id }) { district ->
+            PommeButton(district.name, onClick = { onSelect(district.id) })
+        }
+    }
+}
+```
+
+items は Compose LazyListScope に沿った暫定案であり、SwiftUI ForEach に対応する構造。安定キーを用いる。静的な直接配置との共存方法、ゼロ個・複数個のレイアウトノードを生成する Composable の扱いは未確定。任意の Composable の呼び出しを自動で一行と認識できるとは仮定しない。長い List で各行を遅延描画することを目指し、Section 全体を一つの巨大な遅延項目にして済ませない。Form の直接配置を犠牲にしない。
+
+## 4. 入力・操作
+
+参照：[Button](https://developer.apple.com/documentation/swiftui/button)、[ButtonRole](https://developer.apple.com/documentation/swiftui/buttonrole)、[TextField](https://developer.apple.com/documentation/swiftui/textfield)、[PickerStyle](https://developer.apple.com/documentation/swiftui/pickerstyle)、[Toggle](https://developer.apple.com/documentation/swiftui/toggle)。
+
+### Button
+
+```kotlin
+PommeButton("保存", onClick = onSave)
+PommeButton("削除", role = PommeButtonRole.Destructive, onClick = onDelete)
+PommeButton("ログイン", style = PommeButtonStyle.BorderedProminent,
+    enabled = canLogin, onClick = onLogin)
+PommeButton(onClick = onAdd) {
+    Icon(Icons.Default.Add, contentDescription = "追加")
+}
+```
+
+| SwiftUI | Pomme の対応名称（採用時） |
+| --- | --- |
+| ButtonStyle.automatic | PommeButtonStyle.Automatic |
+| plain / borderless | PommeButtonStyle.Plain / Borderless |
+| bordered / borderedProminent | PommeButtonStyle.Bordered / BorderedProminent |
+| ButtonRole.destructive / cancel | PommeButtonRole.Destructive / Cancel |
+
+Automatic は配置文脈に応じた外観で Plain の別名ではない。role は意味と表示であり、確認ダイアログ・画面遷移を自動実行しない。通常操作には role 未指定を基本として検討する。Form / Toolbar 用の別コンポーネントを作らない。スタイルの初期採用範囲は詳細設計で整理する。
+
+### 入力
+
+```kotlin
+PommeTextField("名称", text = name, onTextChange = onNameChange)
+PommeSecureField("パスワード", text = password, onTextChange = onPasswordChange)
+PommeTextEditor(text = description, onTextChange = onDescriptionChange)
+PommeToggle("通知", isOn = notifications, onIsOnChange = onNotificationsChange)
+PommeSlider(value = opacity, onValueChange = onOpacityChange, valueRange = 0f..1f)
+```
+
+| SwiftUI の概念 | Pomme の命名・意味（採用時） |
+| --- | --- |
+| TextField / SecureField / TextEditor の text | text / onTextChange |
+| title / label / prompt | タイトル・ラベル・入力案内の区別 |
+| textFieldStyle(.automatic / .plain / .roundedBorder) | PommeTextFieldStyle.Automatic / Plain / RoundedBorder |
+| Toggle の isOn | isOn / onIsOnChange |
+| toggleStyle(.automatic / .switch / .button) | PommeToggleStyle.Automatic / Switch / Button |
+| Slider / Stepper の value | value / onValueChange。範囲・step を対応づける |
+| DatePicker の selection / displayedComponents | selection / onSelectionChange、displayedComponents |
+| datePickerStyle(.automatic / .compact / .graphical / .wheel) | PommeDatePickerStyle.Automatic / Compact / Graphical / Wheel |
+
+名称の対応は設計基準とし、各スタイルの実装範囲・入力型・日付時刻型・変更イベント・ラベルの具体的な IF は詳細設計で決める。SwiftUI の文字列タイトルが必ず別ラベルとして表示されるとは仮定しない。状態は利用側を正本とする。
+
+### Picker
+
+```kotlin
+PommePicker(
+    "表示形式",
+    selection = mode,
+    onSelectionChange = onModeChange,
+    style = PommePickerStyle.Segmented
+) {
+    // SwiftUI の tag と同様、選択値と表示内容を対応づける暫定宣言
+    item(tag = Mode.Map) { Text("地図") }
+    item(tag = Mode.List) { Text("一覧") }
+}
+```
+
+- selection / tag は同じ型で扱えること。表示文言や配列インデックスを選択値の代用にしない。
+- SwiftUI の pickerStyle(.automatic / .menu / .segmented / .wheel / .inline / .navigationLink) に対応する名称は PommePickerStyle.Automatic / Menu / Segmented / Wheel / Inline / NavigationLink。初期実装は必要な選択形式に絞り、NavigationLink 等はルーティングを含むため採否を別途判断する。
+- tag の伝達方式・Scope の item 宣言・動的選択肢の構成は未確定。選択肢の追加・削除、ラベル、無効状態、重複 tag の扱いを設計する。
+
+## 5. Theme / Modifier / 文脈
+
+```kotlin
+PommeTheme {
+    // 通常画面、Form、Toolbar で同じ PommeButton を利用できる
+}
+```
+
+- PommeTheme / PommeColorScheme の名称は確定済み。色の役割は requirements.md の4色（accentColor、通常背景、グループ背景、セクション背景）を維持する。背景色プロパティ名・値の最終確定はテーマ詳細設計で行う。
+- SwiftUI の tint、disabled、buttonStyle、pickerStyle 等は見た目だけでなく適用範囲・優先順位を参照する。Compose の標準機能で同じ意味を表現できる場合はそれを使う。
+- Scope は構造・配置、CompositionLocal は親から子への表示文脈、Modifier は個別要素の調整、Composable は実際の UI。Modifier が子孫への環境伝達を自動的に行うとは仮定しない。
+- 明示的なスタイルは文脈による既定スタイルに優先する。無効状態・アクセシビリティを失わせない。スタイルを指定する公開手段は詳細設計で決める。
+
+## 6. その他の対応名称（採用候補）
+
+| SwiftUI の概念 | Pomme の対応 |
+| --- | --- |
+| alert | PommeAlert |
+| confirmationDialog | PommeConfirmationDialog |
+| sheet | PommeSheet |
+| ProgressView | PommeProgressView |
+| ButtonRole.cancel / destructive | 対応する共通の PommeButtonRole |
+
+SwiftUI の alert / confirmationDialog / sheet はプレゼンテーションの修飾子である。Pomme では Compose の表示状態とコールバックを利用し、利用側のルーティングを奪わない。具体的な公開 IF と採否は詳細設計で判断する。
+
+## 7. 受け入れ・詳細設計時の確認
+
+- 対象 iOS バージョンと公式の対応 API を明記する。
+- 公式名称、対応語彙、引数の意味、既定値、配置文脈、入力・操作挙動を照合する。
+- 本資料の利用例の構造を維持する。各画面の手動装飾、専用行ラッパー、配置先別コンポーネントを追加して逃げない。
+- 未決定の技術課題（直接配置と遅延描画、Modifier による親への情報伝達等）を小規模な検証で解消してから公開 IF を確定する。
+- 全 UI コンポーネントに Compose Preview を用意し、Light / Dark、必要な主要状態、Form / Toolbar 等の配置文脈の差を確認する。Preview 必須ルールを維持する。

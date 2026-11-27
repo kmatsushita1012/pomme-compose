@@ -10,6 +10,7 @@
 - [要件](docs/requirements.md)
 - [構成・設計方針](docs/architecture.md)
 - [コンポーネント要件](docs/components.md)
+- [SwiftUI 準拠の API 要件・利用イメージ](docs/api-design.md)
 
 個別の作業では、対象 Issue と承認済みの詳細設計資料も確認する。
 
@@ -23,6 +24,7 @@
 - Form / List / Section および Scaffold / Toolbar は SwiftUI に近い宣言的な構成を目指し、Compose の receiver Scope を活用した型安全な DSL を優先して設計する。具体的な Scope や DSL の IF は詳細設計で決める。
 - PommeForm / PommeSection では直接の子コンテンツを原則として行として扱う。行専用の公開コンポーネント PommeRow は提供せず、複数要素を一行にまとめる場合は標準の Row / Column / Box 等を利用する。
 - Scope は構造・配置意図、CompositionLocal は表示文脈、Modifier は個別の外観・レイアウト、Composable は実際の UI を担う。行の標準装飾は親と内部共通基盤が管理する。
+- SwiftUI の対応 API を命名・責務・構造・既定挙動の基準とする。型名、enum の値、引数、スタイル、Modifier 相当の概念まで対応を確認する。Kotlin / Compose 固有の差異は docs/api-design.md に従い根拠を残す。
 - 要件と詳細設計を区別する。未承認の公開インターフェース（以下 IF）や仕様を実装者の判断で確定・追加しない。
 - UI コンポーネントの新規実装・変更時は、対象コンポーネントの Compose Preview を必ず用意・更新する。サンプルアプリやテストだけで代替してはならない。
 - 開発ルールの詳細と完了条件は開発スキルを参照する。

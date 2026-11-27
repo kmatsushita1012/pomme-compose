@@ -9,13 +9,15 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 
 ## 1. 作業前
 
-1. ルートの AGENTS.md、docs/requirements.md、docs/architecture.md、docs/components.md を読む。
+1. ルートの AGENTS.md、docs/requirements.md、docs/architecture.md、docs/components.md、docs/api-design.md を読む。
 2. 作業対象の Issue、関連コンポーネント、承認済みの詳細設計・既存実装を確認する。
 3. 要件と具体的な公開 IF を区別する。未確定の IF（命名、引数、型、DSL、デフォルト挙動等）は詳細設計として提案し、合意前に確定・実装しない。
 4. 要件にない操作や仕様を追加する必要がある場合は、実装範囲を独断で広げない。
 
 ## 2. 実装ルール
 
+- 対応する SwiftUI 公式 API を確認し、公開名称（型・enum 値・引数・スタイル・Modifier 相当を含む）、責務、既定挙動、利用コードを照合する。独自の同義語や Material 由来の別概念へ安易に置き換えない。差異が必要なら理由・利用側への影響を記録して合意する。
+- docs/api-design.md の利用例の構造を維持する。未承認のシグネチャは確定しない。Toolbar は明示配置を優先し、意味による自動配置を追加しない。
 - 公開 UI コンポーネントは例外なく Pomme 接頭辞で統一する。Compose 標準の Text、Row、Column、Box、Spacer 等に不要な独自ラッパーを作らない。
 - Form / List / Section、Scaffold / Toolbar の詳細設計では Compose の receiver Scope を活用し、SwiftUI のように構造や配置意図を宣言できる型安全な DSL を優先する。具体的な IF は承認済み詳細設計に従う。
 - PommeForm / PommeSection の直接の子を原則一行として扱う。PommeRow 等の専用公開ラッパーを必須化・追加しない。複数要素は標準 Row / Column / Box 等でまとめ、行の標準装飾は親と内部共通基盤へ集約する。
@@ -55,6 +57,7 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 - [ ] 対象要件および承認済み詳細設計に一致する。
 - [ ] 未承認の公開 IF や UI 仕様の追加がない。
 - [ ] 公開 UI コンポーネント名は Pomme 接頭辞で統一されている。
+- [ ] 対応 SwiftUI API と細部の名称・責務・既定挙動・利用構造を照合し、差異が必要なら理由を記録している。
 - [ ] Form / List / Section、Scaffold / Toolbar の Scope 設計は宣言的で、誤用・再コンポーズ・動的な更新を考慮している（対象変更時）。
 - [ ] Form / Section で直接配置が可能で、専用の行ラッパーを要求せず、標準レイアウトと親の行装飾を分離している（対象変更時）。
 - [ ] アプリ固有の処理や不要な依存を持ち込んでいない。

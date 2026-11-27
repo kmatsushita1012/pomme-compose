@@ -2,6 +2,8 @@
 
 開発者向けの実装対象の棚卸し。採用する公開 UI コンポーネントの正式名称は以下の Pomme 接頭辞付きの名称とする。検討対象の採否、公開関数のシグネチャや DSL、内部実装単位は未確定。
 
+具体的な名称対応・利用例・挙動要件は [API 要件・利用イメージ](api-design.md) を併読する。
+
 ## 入力系
 
 | 公開コンポーネント名 | 必要な機能・責務 |
@@ -43,7 +45,7 @@ PommeForm / PommeList / PommeSection は Compose の Scope を活用した宣言
 | PommeScaffold | 画面背景、上部・下部のバーとコンテンツ領域の配置、システムバー・IME・WindowInsets との整合 |
 | PommeToolbar | 画面タイトル、前後の操作領域、タイトルと操作の配置、必要な操作要素の外観 |
 
-PommeScaffold / PommeToolbar は Scope を活用して画面構造と操作要素の配置意図を宣言できるようにする。具体的な DSL は詳細設計で決める。地図等の独自コンテンツにも適用できること。画面遷移、戻る可否、保存可否は利用側が判断する。保存・キャンセル・戻るボタンなどの自動追加を行わない。Android のシステム戻る操作を不必要に奪わない。
+PommeScaffold / PommeToolbar は Scope を活用して画面構造と操作要素の配置先を宣言できるようにする。PommeToolbarItem の配置は PommeToolbarPlacement.TopBarLeading / TopBarTrailing / Principal / BottomBar を明示する。操作の意味に基づく自動配置は初期対象外。具体的な DSL は詳細設計で決める。地図等の独自コンテンツにも適用できること。画面遷移、戻る可否、保存可否は利用側が判断する。保存・キャンセル・戻るボタンなどの自動追加を行わない。Android のシステム戻る操作を不必要に奪わない。
 
 ## その他の検討対象
 
