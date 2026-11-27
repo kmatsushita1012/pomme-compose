@@ -312,4 +312,4 @@ SwiftUI の alert / confirmationDialog / sheet はプレゼンテーションの
 - 公式名称、対応語彙、引数の意味、既定値、配置文脈、入力・操作挙動を照合する。
 - 本資料の利用例の構造を維持する。各画面の手動装飾、専用行ラッパー、配置先別コンポーネントを追加して逃げない。
 - 未決定の技術課題（直接配置と遅延描画、Modifier による親への情報伝達等）を小規模な検証で解消してから公開 IF を確定する。
-- 全 UI コンポーネントに Compose Preview を用意し、Light / Dark、必要な主要状態、Form / Toolbar 等の配置文脈の差を確認する。Preview 必須ルールを維持する。
+- 全 UI コンポーネントに Style ごとの個別 Compose Preview を用意し、Light / Dark 両方、必要な主要状態、Form / Toolbar 等の配置文脈の差を実際に描画する。各 Style × Light / Dark の画像を PR 本文に必ず添付する。Style がない場合も両テーマ必須。詳細は [開発ワークフロー](development-workflow.md) を参照する。

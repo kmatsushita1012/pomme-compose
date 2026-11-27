@@ -11,6 +11,7 @@
 - [構成・設計方針](docs/architecture.md)
 - [コンポーネント要件](docs/components.md)
 - [SwiftUI 準拠の API 要件・利用イメージ](docs/api-design.md)
+- [開発ワークフロー](docs/development-workflow.md)
 
 個別の作業では、対象 Issue と承認済みの詳細設計資料も確認する。
 
@@ -27,7 +28,8 @@
 - SwiftUI の View / ToolbarItem 等の構造要素には Pomme 接頭辞を付ける。View Modifier 相当の画面構造・設定は Scope の lowerCamelCase 関数（toolbar、navigationTitle 等）、要素単位の装飾は Modifier 拡張で表現する。独立した PommeToolbar は提供しない。
 - SwiftUI の対応 API を命名・責務・構造・既定挙動の基準とする。型名、enum の値、引数、スタイル、Modifier 相当の概念まで対応を確認する。Kotlin / Compose 固有の差異は docs/api-design.md に従い根拠を残す。
 - 要件と詳細設計を区別する。未承認の公開インターフェース（以下 IF）や仕様を実装者の判断で確定・追加しない。
-- UI コンポーネントの新規実装・変更時は、対象コンポーネントの Compose Preview を必ず用意・更新する。サンプルアプリやテストだけで代替してはならない。
+- MyKanban の既存ワークフローに従う。原則 1 コンポーネント 1 Issue・1 ファイル・1 PR とし、公開 IF と受け入れ条件を着手前に合意する。実装担当は PR 作成まで責任を持つ。
+- UI コンポーネントの新規実装・変更時は、対象コンポーネントと同じファイルに全 Style 個別の Compose Preview を用意・更新する。各 Style の Light / Dark 両方を実際に描画し、画像を PR 本文に必ず添付する。画像の不足・未確認は完了不可とする。Style がない場合も両テーマ必須。サンプルやテストだけで代替しない。
 - 開発ルールの詳細と完了条件は開発スキルを参照する。
 
 ## 資料の役割
