@@ -11,8 +11,30 @@ Pomme Compose は、Android の Jetpack Compose 向けに iOS の標準 UI に�
 
 特定のアプリの業務ロジックや画面遷移方式には依存しません。
 
+## 開発
+
+### 必要な環境
+
+- JDK 21
+- Android SDK Platform 36
+- Android Emulator（instrumentation test の実行時）
+
+Gradle Wrapper は `JAVA_HOME` で指定した JDK を使います。`JAVA_HOME` と Android Studio の Gradle JDK を 21 に設定してください。
+
+### ビルドとテスト
+
+```shell
+./gradlew assembleDebug
+./gradlew testDebugUnitTest
+./gradlew :sample:connectedDebugAndroidTest
+```
+
+`:sample:connectedDebugAndroidTest` は起動済みの Android Emulator または接続済みの Android 端末が必要です。Android Studio ではルートの `settings.gradle.kts` を開いてください。ローカル SDK の場所は `local.properties` に設定します。このファイルは Git 管理対象外です。
+
+Gradle Wrapper、AGP、Kotlin、Compose、SDK の初期バージョンは [構成・設計方針](docs/architecture.md#初期ビルド構成) に記載しています。
+
 ## 開発状況
 
-現在は要件整理・設計段階です。ライブラリの実装、公開 API、導入方法および配布バージョンは未確定です。利用可能なリリースはまだありません。
+Gradle、Android ライブラリ `:pomme`、サンプルアプリ `:sample` の初期構成を用意しています。Pomme の UI コンポーネントと公開 API は未実装で、利用可能なリリースはまだありません。
 
 Pomme Compose は独立したプロジェクトであり、Apple の公式製品ではありません。

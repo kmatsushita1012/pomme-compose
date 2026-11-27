@@ -8,18 +8,42 @@
 pomme-compose/
 ├── README.md
 ├── AGENTS.md
+├── settings.gradle.kts
+├── build.gradle.kts
+├── gradle.properties
+├── gradle/wrapper/
+├── gradle/libs.versions.toml
 ├── docs/
 ├── .agents/skills/development/SKILL.md
-├── pomme/                   # Android ライブラリ本体（予定）
+├── pomme/                   # Android ライブラリ本体
+│   ├── build.gradle.kts
+│   └── src/main/AndroidManifest.xml
+├── sample/                  # 動作確認・カタログアプリ
+│   ├── build.gradle.kts
 │   └── src/
-│       ├── main/
-│       ├── test/
-│       └── androidTest/
-├── sample/                  # 動作確認・カタログアプリ（予定）
-│   └── src/
-├── gradle/                  # 共通ビルド設定（予定）
+│       ├── main/AndroidManifest.xml, java/.../MainActivity.kt
+│       └── androidTest/java/.../MainActivityTest.kt
 └── .github/workflows/       # CI（予定）
 ```
+
+## 初期ビルド構成
+
+初期の Gradle・SDK 構成は以下とする。Kotlin と Compose のバージョンは MaTool_Kotlin との依存互換性を優先し、AGP は Kotlin Gradle Plugin のサポート範囲内に置く。
+
+| 項目 | バージョン・値 |
+| --- | --- |
+| Gradle Wrapper | 8.13 |
+| Android Gradle Plugin | 8.11.1 |
+| Kotlin / Compose Compiler Gradle Plugin | 2.2.20 |
+| Compose BOM | 2026.06.01（MaTool_Kotlin と共通） |
+| JDK / JVM target | 21 |
+| compileSdk | 36 |
+| minSdk | 26 |
+| サンプル targetSdk | 36 |
+| ライブラリ namespace | `com.studiomk.pomme` |
+| サンプル namespace / applicationId | `com.studiomk.pomme.sample` |
+
+AGP 8.11.1 は Gradle 8.13 と API 36 をサポートする。Kotlin 2.2.20 の正式サポート上限に合わせて AGP 8.11.1 を選ぶ。Compose の依存バージョンは Version Catalog と BOM で一元管理する。ライブラリは Compose Runtime / UI / Foundation を公開依存とし、Material 3 は必要なコンポーネント Issue で判断する。CI、リリース、配布方式は別Issueで扱う。
 
 ライブラリ本体はテーマ、入力、リスト、スクリーン、必要なモーダル表示・アイコン等の責務で整理する。具体的なパッケージ構成と公開・非公開の境界は詳細設計で確定する。初期の Gradle モジュール分割はライブラリ本体とサンプルアプリを基本とし、コンポーネント単位での細分化を目的としない。
 
@@ -29,7 +53,15 @@ pomme-compose/
 - ライブラリ本体はサンプルアプリや MaTool に依存しない。
 - Compose Foundation、Runtime、UI 等を基本とし、Material 3 の既存コンポーネントを再利用できる場合は利用する。ただし外観・挙動が要件を満たすこと。
 - cupertino-compose への依存は禁止。新しい外部 UI ライブラリの追加は理由を明示して設計上の合意を得る。
-- Android の依存バージョン、Gradle プラグイン、配布方式等は基盤設計で決める。JitPack によるタグ配布は候補とし、決定事項ではない。
+- Android の依存バージョンと Gradle プラグインは「初期ビルド構成」に従う。配布方式は後続設計の対象とし、JitPack によるタグ配布は候補に留める。
+
+```mermaid
+flowchart LR
+    sample[":sample"] --> pomme[":pomme"]
+    pomme --> compose["Compose Runtime / UI / Foundation"]
+    sample --> activity["Activity Compose"]
+    sample --> material3["Material 3"]
+```
 
 ## ファイルと実装単位
 
