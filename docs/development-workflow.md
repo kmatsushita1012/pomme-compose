@@ -81,3 +81,28 @@ PR 本文の記載例（既存テンプレートの該当欄を利用する）�
 - SwiftUI の名称・責務・既定挙動・Style の文脈適用を照合する。利用者に不要なラッパー・余分な手動装飾や独自操作を要求しない。
 - Issue の変更範囲、共通基盤との責務分離、公開範囲、全 Style の Preview と実画像、Light / Dark の両方、必要な状態・文脈、最新の PR 実装との一致をレビューする。
 - 詳細な実装・完了チェックは [.agents/skills/development/SKILL.md](../.agents/skills/development/SKILL.md) に従う。
+
+## 6. CI・テスト・カバレッジ
+
+`.github/workflows/android-ci.yml` は `main` 向けの Pull Request と `main` への push で実行する。PR checks では `Pomme Compose CI / verify` を確認する。この check は build、Lint、unit test、サンプルの instrumentation test のいずれかが失敗すると失敗する。
+
+```mermaid
+flowchart LR
+    trigger[PR to main / push to main] --> build[Build both modules]
+    build --> lint[Lint both modules]
+    lint --> unit[Unit tests and coverage reports]
+    unit --> ui[Sample instrumentation tests on API 36]
+    ui --> check[Pomme Compose CI / verify]
+```
+
+```shell
+./gradlew :pomme:assembleDebug :sample:assembleDebug
+./gradlew :pomme:lintDebug :sample:lintDebug
+./gradlew :pomme:testDebugUnitTest :sample:testDebugUnitTest
+./gradlew :pomme:createDebugUnitTestCoverageReport :sample:createDebugUnitTestCoverageReport
+./gradlew :sample:connectedDebugAndroidTest
+```
+
+instrumentation test は API 36 の Android Emulator で実行する。ローカルでは起動済み Emulator または接続済み Android 端末が必要。
+
+非 UI ロジックの行カバレッジは 90% 以上を目標とする。debug unit test coverage を両モジュールで有効にし、CI run に `unit-test-coverage-reports` artifact として HTML レポートを保存する。レビュー時にレポートの非 UI ロジックの行カバレッジを確認する。UI の描画・Compose コンポーネント自体はこの目標の対象に含めない。現在の初期構成には非 UI ロジックがないため、90% を CI の失敗閾値にはしていない。
