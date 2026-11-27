@@ -30,11 +30,12 @@
 - 見た目だけでなく、利用側のコードも SwiftUI のように構造と意図を簡潔に表現できること。対応する公開 API の名称、意味、構成、文脈による既定スタイルを維持し、独自の同義語を導入しない。
 - [API 要件・利用イメージ](api-design.md) の命名方針と構造を遵守する。コード例は設計の基準であり、未確定の関数シグネチャを承認するものではない。
 - 公開 UI コンポーネント名は一律 Pomme 接頭辞を付ける。テーマは PommeTheme、カラースキームは PommeColorScheme とする。
-- 特に PommeForm / PommeList / PommeSection と PommeScaffold / PommeToolbar は Compose の Scope を活用し、親子関係や配置の文脈に沿って宣言的に構築できるよう設計する。
+- 特に PommeForm / PommeList / PommeSection と PommeScaffold の toolbar / navigationTitle は Compose の Scope を活用し、親子関係や配置の文脈に沿って宣言的に構築できるよう設計する。
 - PommeForm / PommeSection では Pomme の入力・操作コンポーネントや標準 Compose の Text、Row、Column、Box 等を直接配置し、原則として各直接の子レイアウトを一行として扱えること。専用の PommeRow は公開対象外とする。
 - 複数要素を一行にまとめる場合は標準のレイアウトコンポーネントを利用する。行の余白、最低高さ、区切り線等の標準装飾は親が管理し、個別調整が必要な場合は Modifier 拡張を優先して検討する。
 - 呼び出し側がレイアウトの内部構造や装飾を手動で組み立て直す必要を減らす。標準 Compose のコンテンツを組み合わせる柔軟性も確保する。
-- 詳細な DSL 構文、Scope 型、公開メソッド、コンテンツの登録方式、List の遅延描画と直接配置の両立方法は未確定とする。
+- PommeScaffold の Scope 内に navigationTitle、content、toolbar を宣言し、toolbar 内に PommeToolbarItem を配置する構造を採用する。独立した PommeToolbar は提供しない。SwiftUI の View Modifier 相当の画面設定・構造宣言は lowerCamelCase の Scope 関数を用いる。
+- 合意済みの名称・構造を除く詳細な DSL 構文、Scope 型の詳細、公開メソッドの引数・オーバーロード、コンテンツの登録方式、List の遅延描画と直接配置の両立方法は未確定とする。
 
 ## テーマ・カラースキーム
 
@@ -71,4 +72,4 @@
 - アプリ固有の画面・データモデル・Presenter・ViewModel・DI・API 通信・永続化。
 - ナビゲーションツリー、画面の遷移先・保存可否等の業務判断。
 - SwiftUI 全 API の互換実装や、iOS のシステム全体の再現。
-- この段階での命名規則以外の具体的な公開 IF の確定、ライブラリの実装、リリース。
+- この段階での合意済みの名称・構造以外の具体的な公開 IF の確定、ライブラリの実装、リリース。

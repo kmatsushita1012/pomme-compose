@@ -2,12 +2,24 @@
 
 開発者向け。SwiftUI の外観だけでなく、利用側の宣言的な構造、語彙、責務、文脈に応じた挙動を設計の基準とする。
 
-本資料の命名規則・必須の挙動・初期範囲は遵守する。コード例は具体的な利用イメージであり、最終的なシグネチャ、Scope 型、オーバーロード、内部実装を確定するものではない。対応候補は実装の必須要件に含めない。
+本資料の命名規則・必須の挙動・初期範囲は遵守する。合意済みの名称・宣言構造は維持する。コード例は具体的な利用イメージであり、それ以外の最終的なシグネチャ、Scope 型の詳細、オーバーロード、内部実装を確定するものではない。対応候補は実装の必須要件に含めない。
 
 ## 1. 公開 API の命名原則
 
 - SwiftUI の対応 API の公式名称を参照する。コンポーネント名だけでなく、型名、enum の値、引数、スタイル、Modifier 相当の操作まで対応を維持する。
 - 独自の公開 UI コンポーネントと対応する独自公開型は Pomme 接頭辞を付ける。Kotlin の型・enum は PascalCase、関数・引数は lowerCamelCase。既存の確定名は維持する。
+- SwiftUI の View / ToolbarItem 等の構造要素と View Modifier 相当の API を区別する。前者は Pomme 接頭辞、後者は lowerCamelCase の対応名を用いる。
+- 画面全体の構造・設定を宣言する View Modifier 相当の API は Scope 関数を優先する。個別要素の装飾は Modifier 拡張を優先し、親から子への表示文脈の伝達は CompositionLocal を用いる。すべての View Modifier を Scope に移すわけではない。
+
+| SwiftUI | Pomme | 分類 |
+| --- | --- | --- |
+| Form / Section | PommeForm / PommeSection | UI コンポーネント |
+| ToolbarItem | PommeToolbarItem | Scope 内の構造要素 |
+| .toolbar | toolbar | Scope 関数 |
+| .navigationTitle | navigationTitle | Scope 関数 |
+| .navigationBarTitleDisplayMode | navigationBarTitleDisplayMode（採用候補） | Scope 関数 |
+| .listRowInsets / .listRowBackground | Modifier.listRowInsets / Modifier.listRowBackground（採用候補） | Modifier 拡張 |
+
 - SwiftUI の topBarLeading を Leading / Left / Start、borderedProminent を Filled / Primary といった独自の同義語へ変えない。
 - SwiftUI で区別される style（外観）、role（操作の意味）、placement（配置）、selection（選択値）、label（ラベル）、prompt（入力案内）は混同しない。
 - Compose 標準 Text / Row / Column / Box / Spacer / Icon、Modifier、状態ホイスティングをそのまま活用する。SwiftUI の Binding や ViewBuilder の仕組み自体を再実装する必要はない。Binding は値と変更コールバックに対応させる。
@@ -35,7 +47,9 @@ automatic、confirmationAction、cancellationAction、destructiveAction、primar
 ### 利用イメージ
 
 ```kotlin
-PommeScaffold(navigationTitle = "基本情報") {
+PommeScaffold {
+    navigationTitle("基本情報")
+
     content {
         PommeForm {
             PommeSection {
@@ -45,18 +59,49 @@ PommeScaffold(navigationTitle = "基本情報") {
         }
     }
 
-    PommeToolbar {
-        PommeToolbarItem(placement = PommeToolbarPlacement.TopBarLeading) {
+    toolbar {
+        PommeToolbarItem(TopBarLeading) {
             PommeButton("キャンセル", onClick = onCancel)
         }
-        PommeToolbarItem(placement = PommeToolbarPlacement.TopBarTrailing) {
+        PommeToolbarItem(TopBarTrailing) {
             PommeButton("保存", onClick = onSave)
         }
     }
 }
 ```
 
-- Scaffold の Scope で画面本体と Toolbar を宣言し、Toolbar の Scope で配置ごとのアイテムを宣言する。表示される操作は通常の Composable とする。
+TopBarLeading / TopBarTrailing は PommeToolbarPlacement の enum 値を直接 import して使用する。完全修飾した PommeToolbarPlacement.TopBarLeading も利用できること。Kotlin の context-sensitive resolution による省略も利用側の選択肢だが、実験的コンパイラ機能をライブラリ利用の必須条件にしない。独自の enum 別名を増やさない。
+
+### Scope の宣言イメージ
+
+```kotlin
+@PommeDsl
+interface PommeScaffoldScope {
+    fun navigationTitle(title: String)
+    fun content(content: @Composable () -> Unit)
+    fun toolbar(content: PommeToolbarScope.() -> Unit)
+}
+
+@PommeDsl
+interface PommeToolbarScope {
+    fun PommeToolbarItem(
+        placement: PommeToolbarPlacement,
+        content: @Composable () -> Unit
+    )
+}
+
+@Composable
+fun PommeScaffold(
+    modifier: Modifier = Modifier,
+    content: PommeScaffoldScope.() -> Unit
+)
+```
+
+この宣言例は合意済みの名称・構造を示す。追加の引数・オーバーロード・Scope の具体実装は詳細設計で決める。
+
+- Scaffold の Scope で navigationTitle、content、toolbar を宣言し、toolbar の Scope で配置ごとの PommeToolbarItem を宣言する。表示される操作は通常の Composable とする。
+- toolbar は SwiftUI の .toolbar に対応する構造宣言であり、独立した公開 PommeToolbar は提供しない。navigationTitle は Scaffold の引数でなく Scope 関数で設定する。
+- Scope による構造宣言と Composable の描画を分離する。宣言を評価するたびに必要な構造を構築し、再コンポーズによる重複登録・古い要素の残留を防ぐ。内部のデータ構造や描画方式は詳細設計で検証する。
 - タイトルは navigationTitle に対応する概念。Principal のカスタムコンテンツとの優先関係は詳細設計で定義する。
 - 同じ配置への複数アイテム、条件付き表示、Toolbar の省略、地図等の任意のコンテンツを扱う。
 - 配置、タイトルの中央揃え、長いタイトル、RTL、Insets、システムバー、IME の整合は親が管理する。利用側に Row / Box で Toolbar を組み直させない。

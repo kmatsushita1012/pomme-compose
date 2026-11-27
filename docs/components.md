@@ -43,9 +43,9 @@ PommeForm / PommeList / PommeSection は Compose の Scope を活用した宣言
 | 公開コンポーネント名 | 必要な機能・責務 |
 | --- | --- |
 | PommeScaffold | 画面背景、上部・下部のバーとコンテンツ領域の配置、システムバー・IME・WindowInsets との整合 |
-| PommeToolbar | 画面タイトル、前後の操作領域、タイトルと操作の配置、必要な操作要素の外観 |
+| PommeToolbarItem | Scaffold の toolbar Scope 内で操作要素と配置先を宣言する構造要素 |
 
-PommeScaffold / PommeToolbar は Scope を活用して画面構造と操作要素の配置先を宣言できるようにする。PommeToolbarItem の配置は PommeToolbarPlacement.TopBarLeading / TopBarTrailing / Principal / BottomBar を明示する。操作の意味に基づく自動配置は初期対象外。具体的な DSL は詳細設計で決める。地図等の独自コンテンツにも適用できること。画面遷移、戻る可否、保存可否は利用側が判断する。保存・キャンセル・戻るボタンなどの自動追加を行わない。Android のシステム戻る操作を不必要に奪わない。
+PommeScaffold の Scope 内で navigationTitle、content、toolbar を宣言する。toolbar は独立した公開コンポーネントではなく、SwiftUI の .toolbar に対応する Scope 関数とする。PommeToolbarItem は toolbar の Scope 内に宣言する。PommeToolbarItem の配置は PommeToolbarPlacement.TopBarLeading / TopBarTrailing / Principal / BottomBar を明示する。操作の意味に基づく自動配置は初期対象外。合意済みの宣言構造を維持し、具体的なシグネチャは詳細設計で決める。地図等の独自コンテンツにも適用できること。画面遷移、戻る可否、保存可否は利用側が判断する。保存・キャンセル・戻るボタンなどの自動追加を行わない。Android のシステム戻る操作を不必要に奪わない。
 
 ## その他の検討対象
 

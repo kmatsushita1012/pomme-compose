@@ -47,6 +47,7 @@ pomme-compose/
 - テーマとカラースキームは PommeTheme / PommeColorScheme とする。
 - Text、Row、Column、Box、Spacer 等の Compose 標準 API はそのまま利用する。Row / Column / Box はそれぞれ SwiftUI の HStack / VStack / ZStack に相当する汎用レイアウトとして利用する。PommeRow は公開対象外とし、独自のスタック代替も作らない。
 - 公開型・enum 値・引数・スタイル・Modifier 相当の名称も SwiftUI の対応 API を優先する。例：PommeToolbarPlacement.TopBarLeading / TopBarTrailing。詳細は [API 要件・利用イメージ](api-design.md) を参照する。
+- SwiftUI の View や ToolbarItem 等の構造要素には Pomme 接頭辞、View Modifier 相当の Scope 関数や Modifier 拡張には lowerCamelCase の対応名を使用する。例：PommeToolbarItem、toolbar、navigationTitle、listRowInsets。
 - 上記は公開コンポーネントの規則であり、内部実装や DSL 内の補助メソッドまで一律に同じ接頭辞を付けることを要求しない。それらの名称は詳細設計で定める。
 
 ## Scope を活用した宣言的 UI の設計方針
@@ -65,16 +66,16 @@ SwiftUI のように、親の文脈の中で子の構造や配置意図を宣言
 
 ### Scaffold / Toolbar
 
-- Scaffold は画面本体と上部・下部のバーなどの構造を宣言できるようにし、Toolbar はタイトルと操作要素の配置意図を宣言できる構造を目指す。
+- PommeScaffold の Scope 内で navigationTitle(...)、content { ... }、toolbar { ... } を宣言する。toolbar は SwiftUI の .toolbar に対応する Scope 関数であり、独立した公開 PommeToolbar は提供しない。PommeToolbarScope 内で PommeToolbarItem を明示配置する。
 - SwiftUI の toolbar / ToolbarItem の考え方を参考に、各操作要素の配置先を明示できるようにする。PommeToolbarPlacement の初期値域は TopBarLeading / TopBarTrailing / Principal / BottomBar。Principal は固定の中央領域として扱う。操作の意味による自動配置は初期対象外。利用側が毎回 Row / Box で配置や余白を組み直すことを前提にしない。
-- Toolbar の構成と Scaffold のレイアウト責務を分離する。特定の画面遷移方式や保存・キャンセル操作を Scope に組み込まない。
+- Toolbar の構成宣言と Scaffold のレイアウト責務を分離する。Scope は構造を収集し、実際の描画内容は Composable ラムダとして扱う。具体的な実装方式は詳細設計で検証する。特定の画面遷移方式や保存・キャンセル操作を Scope に組み込まない。
 - 一般的な画面だけでなく、地図等の任意のコンテンツを組み合わせられること。
 
 ### 共通の設計上の注意
 
 | Compose の仕組み | 責務 |
 | --- | --- |
-| Scope | 親子構造と配置意図の宣言 |
+| Scope | 親子構造・配置意図と画面全体の設定の宣言（toolbar、navigationTitle 等） |
 | CompositionLocal | 親から子への表示文脈の伝達（Form 内、Toolbar 内等のスタイル適応） |
 | Modifier | 各要素の外観・レイアウトの個別調整 |
 | Composable | 実際の UI の表現 |
@@ -84,7 +85,7 @@ SwiftUI のように、親の文脈の中で子の構造や配置意図を宣言
 - Scope はコンテンツの構成・配置の文脈を表現するために利用する。業務状態の保有やグローバルな登録機構に転用しない。
 - 再コンポーズによる二重登録・古いコンテンツの残留、条件分岐や動的要素の更新漏れ、状態や要素の同一性の破壊を防ぐ。
 - Compose の標準的な状態管理・描画方式を尊重する。型安全性のためだけに過剰な DSL や不要な階層を増やさない。
-- Scope 型名、receiver の型、関数シグネチャ、DSL 構文、項目の登録・描画方式、Toolbar の具体的なレイアウト・配置解決方式は詳細設計で決める（初期の配置名称は確定済み）。本節は具体 IF の承認ではない。
+- 合意済みの Scope 関数名・宣言構造・初期配置名称を維持し、receiver 型の詳細、関数シグネチャ、項目の登録・描画方式、Toolbar の具体的なレイアウト・配置解決方式は詳細設計で決める。
 
 ## サンプルアプリ
 
@@ -92,4 +93,4 @@ SwiftUI のように、親の文脈の中で子の構造や配置意図を宣言
 
 ## 未決定事項
 
-確定済みの公開コンポーネント名を除く IF の命名・型・シグネチャ・DSL、テーマ提供方式、List の遅延描画と直接配置の両立方法、複数レイアウトノードを生成するコンテンツの扱い、行単位の Modifier 拡張、具体的なレイアウト値、Android 対応バージョン、ビルド・CI・配布設定は後続設計の対象。仕様不足を実装者の独断で埋めず、要件と分けて明文化・合意する。
+確定済みの公開名称・宣言構造を除く IF の命名・型・シグネチャ・DSL、テーマ提供方式、List の遅延描画と直接配置の両立方法、複数レイアウトノードを生成するコンテンツの扱い、行単位の Modifier 拡張、具体的なレイアウト値、Android 対応バージョン、ビルド・CI・配布設定は後続設計の対象。仕様不足を実装者の独断で埋めず、要件と分けて明文化・合意する。
