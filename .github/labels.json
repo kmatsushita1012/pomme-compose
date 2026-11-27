@@ -1,0 +1,87 @@
+[
+  {
+    "name": "arc:iOS",
+    "color": "0E8A16",
+    "description": "iOSアプリの変更"
+  },
+  {
+    "name": "arc:Android",
+    "color": "1D76DB",
+    "description": "Androidアプリの変更"
+  },
+  {
+    "name": "arc:BE",
+    "color": "0052CC",
+    "description": "バックエンドの変更"
+  },
+  {
+    "name": "arc:Shared",
+    "color": "5319E7",
+    "description": "複数プラットフォームで共有する領域"
+  },
+  {
+    "name": "arc:Tooling",
+    "color": "BFDADC",
+    "description": "開発ツール・自動化の変更"
+  },
+  {
+    "name": "arc:Infra",
+    "color": "D4C5F9",
+    "description": "インフラ・CI/CDの変更"
+  },
+  {
+    "name": "arc:Docs",
+    "color": "0075CA",
+    "description": "ドキュメントの変更"
+  },
+  {
+    "name": "type:Feature",
+    "color": "A2EEEF",
+    "description": "機能追加・機能改善"
+  },
+  {
+    "name": "type:Fix",
+    "color": "D73A4A",
+    "description": "不具合の修正"
+  },
+  {
+    "name": "type:Refactor",
+    "color": "C2E0C6",
+    "description": "振る舞いを維持するリファクタリング"
+  },
+  {
+    "name": "type:Maintenance",
+    "color": "F9D0C4",
+    "description": "保守・更新作業"
+  },
+  {
+    "name": "kind:implementation",
+    "color": "0E8A16",
+    "description": "Codexが1 Issue = 1 PRで実装するチケット"
+  },
+  {
+    "name": "kind:epic",
+    "color": "5319E7",
+    "description": "複数の実装チケットを束ねる親Issue（自動実装しない）"
+  },
+  {
+    "name": "kind:manual",
+    "color": "FBCA04",
+    "description": "Codex実装を伴わない手動作業"
+  },
+  {
+    "name": "agent:exclusive",
+    "color": "B60205",
+    "description": "In ProgressからDoneまで他タスクを止める排他実行"
+  },
+  {
+    "name": "agent:auto-merge",
+    "color": "1D76DB",
+    "description": "条件を満たす場合のみ自動マージを許可"
+  },
+  {
+    "name": "agent:manual-review",
+    "color": "D93F0B",
+    "description": "マージ前の人間レビュー・確認を必須とする"
+  }
+]
