@@ -4,6 +4,16 @@
 
 具体的な名称対応・利用例・挙動要件は [API 要件・利用イメージ](api-design.md) を併読する。
 
+## テーマ基盤
+
+| 公開型・コンポーネント | 責務 |
+| --- | --- |
+| PommeColorScheme | 4つの公開色の役割、ライト・ダークの配色 |
+| PommeTypography | SwiftUI Font.TextStyle に対応する11種類の Compose TextStyle |
+| PommeTheme | ColorScheme と Typography の提供、テーマ・既定書体の適用 |
+
+各基盤は独立したファイル・Issue・PR とする。PommeTypography の全11種類に個別 Preview を定義し、Light / Dark 双方の実画像を PR に添付する。サイズ・名称等は [API 要件・利用イメージ](api-design.md#typography) を参照する。
+
 ## 入力系
 
 | 公開コンポーネント名 | 必要な機能・責務 |
@@ -18,7 +28,7 @@
 | PommeSlider | 範囲内の数値入力、現在値の表示・操作 |
 | PommeStepper | 数値の増減。実際の利用要件を確認して採否を決める |
 
-テーマは PommeTheme、カラースキームは PommeColorScheme とする。
+テーマは PommeTheme、カラースキームは PommeColorScheme、Typography は PommeTypography とする。
 
 入力値の正本は利用側。入力コントロールには業務上の保存処理、検証ルール、確認ダイアログ等を組み込まない。
 

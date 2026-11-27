@@ -35,6 +35,14 @@ pomme-compose/
 
 1 コンポーネント 1 ファイルを原則とし、固有の公開型・Scope・内部実装・Compose Preview は同じ Kotlin ファイルに配置する。複数コンポーネントに共通する処理は適切な共有ファイルへ分離し、テスト・サンプル・ビルド設定等はそれぞれの責務に沿って配置する。共通基盤の整備は独立タスクとし、コンポーネントごとの重複実装で依存関係を回避しない。詳細は [開発ワークフロー](development-workflow.md) を参照する。
 
+## テーマ基盤
+
+- PommeColorScheme と PommeTypography は独立した基盤型であり、PommeTheme が両者を提供する。それぞれ PommeColorScheme.kt / PommeTypography.kt / PommeTheme.kt に定義する。
+- PommeTypography は SwiftUI Font.TextStyle に対応する11個の Compose TextStyle を保持する。既定値の定義を各コンポーネントへ分散させない。
+- PommeTheme.typography を通じた明示指定と、LocalTextStyle / ProvideTextStyle 等による文脈別の既定書体を両立する。通常の Text の既定は body を基準とする。各コンポーネント固有のスタイル対応は詳細設計で SwiftUI と照合する。
+- PommeText 等の独自ラッパーを追加せず、標準 Text の明示 style・fontWeight 等を尊重する。システムフォントと sp による Android のフォント倍率への追従を維持する。
+- PommeTheme に依存しない基盤型の Preview は、後続の PommeTheme が未実装でも実際の基盤型の値と標準 Compose の描画を使用して確認可能とする。テーマ統合後は組み合わせも検証する。
+
 ## UI の責務
 
 - ライブラリ内部で共通の外観とレイアウトを管理する。色・寸法・状態表現の共通規則を画面ごとに再定義しない。
@@ -48,7 +56,7 @@ pomme-compose/
 
 - Pomme が独自に提供する公開 UI コンポーネントは一律 Pomme 接頭辞を付け、名前衝突の有無で例外を設けない。
 - コンポーネント名は原則として SwiftUI の対応概念に合わせる。スクリーンの構成要素など直接対応しないものは責務に沿った名称とする。具体的な一覧は [コンポーネント要件](components.md) を参照する。
-- テーマとカラースキームは PommeTheme / PommeColorScheme とする。
+- テーマ・カラースキーム・Typography は PommeTheme / PommeColorScheme / PommeTypography とする。
 - Text、Row、Column、Box、Spacer 等の Compose 標準 API はそのまま利用する。Row / Column / Box はそれぞれ SwiftUI の HStack / VStack / ZStack に相当する汎用レイアウトとして利用する。PommeRow は公開対象外とし、独自のスタック代替も作らない。
 - 公開型・enum 値・引数・スタイル・Modifier 相当の名称も SwiftUI の対応 API を優先する。例：PommeToolbarPlacement.TopBarLeading / TopBarTrailing。詳細は [API 要件・利用イメージ](api-design.md) を参照する。
 - SwiftUI の View や ToolbarItem 等の構造要素には Pomme 接頭辞、View Modifier 相当の Scope 関数や Modifier 拡張には lowerCamelCase の対応名を使用する。例：PommeToolbarItem、toolbar、navigationTitle、listRowInsets。

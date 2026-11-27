@@ -27,6 +27,7 @@
 - Scope は構造・配置意図、CompositionLocal は表示文脈、Modifier は個別の外観・レイアウト、Composable は実際の UI を担う。行の標準装飾は親と内部共通基盤が管理する。
 - SwiftUI の View / ToolbarItem 等の構造要素には Pomme 接頭辞を付ける。View Modifier 相当の画面構造・設定は Scope の lowerCamelCase 関数（toolbar、navigationTitle 等）、要素単位の装飾は Modifier 拡張で表現する。独立した PommeToolbar は提供しない。
 - SwiftUI の対応 API を命名・責務・構造・既定挙動の基準とする。型名、enum の値、引数、スタイル、Modifier 相当の概念まで対応を確認する。Kotlin / Compose 固有の差異は docs/api-design.md に従い根拠を残す。
+- Typography は PommeTypography とし、SwiftUI Font.TextStyle の11種類の名称・標準サイズ・行高を採用する。Compose 標準 Text / TextStyle と Android のシステムフォント・フォント倍率を利用し、PommeText や独自フォント型を作らない。コンポーネントの既定書体はテーマと表示文脈で管理する。
 - 要件と詳細設計を区別する。未承認の公開インターフェース（以下 IF）や仕様を実装者の判断で確定・追加しない。
 - MyKanban の既存ワークフローに従う。原則 1 コンポーネント 1 Issue・1 ファイル・1 PR とし、公開 IF と受け入れ条件を着手前に合意する。実装担当は PR 作成まで責任を持つ。
 - UI コンポーネントの新規実装・変更時は、対象コンポーネントと同じファイルに全 Style 個別の Compose Preview を用意・更新する。各 Style の Light / Dark 両方を実際に描画し、画像を PR 本文に必ず添付する。画像の不足・未確認は完了不可とする。Style がない場合も両テーマ必須。サンプルやテストだけで代替しない。

@@ -289,10 +289,85 @@ PommeTheme {
 }
 ```
 
-- PommeTheme / PommeColorScheme の名称は確定済み。色の役割は requirements.md の4色（accentColor、通常背景、グループ背景、セクション背景）を維持する。背景色プロパティ名・値の最終確定はテーマ詳細設計で行う。
+- PommeTheme / PommeColorScheme / PommeTypography の名称は確定済み。色の役割は requirements.md の4色（accentColor、通常背景、グループ背景、セクション背景）を維持する。背景色プロパティ名・値の最終確定はテーマ詳細設計で行う。
 - SwiftUI の tint、disabled、buttonStyle、pickerStyle 等は見た目だけでなく適用範囲・優先順位を参照する。Compose の標準機能で同じ意味を表現できる場合はそれを使う。
 - Scope は構造・配置、CompositionLocal は親から子への表示文脈、Modifier は個別要素の調整、Composable は実際の UI。Modifier が子孫への環境伝達を自動的に行うとは仮定しない。
 - 明示的なスタイルは文脈による既定スタイルに優先する。無効状態・アクセシビリティを失わせない。スタイルを指定する公開手段は詳細設計で決める。
+
+### Typography
+
+参照：[Font.TextStyle](https://developer.apple.com/documentation/swiftui/font/textstyle)、[Apple HIG Typography](https://developer.apple.com/design/human-interface-guidelines/typography)。
+
+SwiftUI の名称に合わせ、通常の Dynamic Type サイズを基準に以下の値を採用する。単位は Compose の sp。headline は Semibold、それ以外の基本ウェイトは Normal とし、コンポーネント固有のウェイト調整は必要に応じて行う。
+
+| プロパティ | fontSize | lineHeight | fontWeight |
+| --- | ---: | ---: | --- |
+| largeTitle | 34.sp | 41.sp | Normal |
+| title | 28.sp | 34.sp | Normal |
+| title2 | 22.sp | 28.sp | Normal |
+| title3 | 20.sp | 25.sp | Normal |
+| headline | 17.sp | 22.sp | SemiBold |
+| body | 17.sp | 22.sp | Normal |
+| callout | 16.sp | 21.sp | Normal |
+| subheadline | 15.sp | 20.sp | Normal |
+| footnote | 13.sp | 18.sp | Normal |
+| caption | 12.sp | 16.sp | Normal |
+| caption2 | 11.sp | 13.sp | Normal |
+
+UIKit の title1 / caption1 ではなく SwiftUI の title / caption を使用する。フォントは Android のシステムフォントを使用し、フォント倍率への追従を維持する。iOS 固有のフォントファイルは使用しない。
+
+#### 公開 IF の利用イメージ
+
+```kotlin
+@Immutable
+data class PommeTypography(
+    val largeTitle: TextStyle,
+    val title: TextStyle,
+    val title2: TextStyle,
+    val title3: TextStyle,
+    val headline: TextStyle,
+    val body: TextStyle,
+    val callout: TextStyle,
+    val subheadline: TextStyle,
+    val footnote: TextStyle,
+    val caption: TextStyle,
+    val caption2: TextStyle
+)
+```
+
+```kotlin
+PommeTheme(
+    colorScheme = colorScheme,
+    typography = typography
+) {
+    Text("祭典情報", style = PommeTheme.typography.title)
+    Text("設定内容を変更できます。", style = PommeTheme.typography.footnote)
+    Text(
+        "掛川祭",
+        style = PommeTheme.typography.title2,
+        fontWeight = FontWeight.Bold
+    )
+}
+```
+
+PommeTheme.typography で参照し、Compose 標準の TextStyle / Text / FontWeight 等を使用する。PommeText や独自フォント型・enum は設けない。既定値の生成方法、テーマの内部提供方式、TextStyle の追加プロパティ等は詳細設計で決定する。
+
+#### 文脈による既定書体
+
+通常の Text は body を基準とし、コンポーネントごとに SwiftUI の実際の外観と照合する。下記は初期の対応候補であり、個別コンポーネントの詳細仕様で確定する。
+
+| 配置・用途 | 既定候補 |
+| --- | --- |
+| 通常 Text / Button / TextField / Toggle ラベル / Picker ラベル | body |
+| Section header / footer | footnote |
+| Toolbar title | headline |
+| Large Navigation Title（採用時） | largeTitle |
+
+LocalTextStyle / ProvideTextStyle 等を活用して子コンテンツへ文脈に応じた既定書体を伝える。呼び出し側が毎回サイズを指定する必要がないようにし、明示的な style・fontWeight 等の指定を尊重する。
+
+#### Preview とタスク
+
+PommeTypography.kt は独立した1ファイル・1 Issue・1 PR。全11種類それぞれの個別 Preview を定義し、Light / Dark 両方の画像を PR 本文に添付する（最低22確認単位）。PommeTheme は PommeColorScheme と PommeTypography の両方に依存する。先行する基盤の Preview は実際の基盤型の値を使用し、後続の PommeTheme への逆依存を作らない。
 
 ## 6. その他の対応名称（採用候補）
 

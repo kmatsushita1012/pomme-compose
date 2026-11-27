@@ -35,13 +35,14 @@ MyKanban の既存 Issue テンプレートを尊重し、その項目内に次�
 3. レビュー担当：Issue と PR の整合性、SwiftUI 準拠、公開 IF、実装品質、全 Preview の画像・網羅性、必要な検証結果を確認する。
 4. マージ・完了：CI とレビュー等の既存 MyKanban の条件を満たしてから処理する。画像未添付や描画未確認を完了として扱わない。
 
-基盤 → PommeColorScheme → PommeTheme を先に整え、依存が解消したコンポーネントから並行開発する。Form / List / Section の共有描画基盤は先に設計し、必要な依存を Issue に明示する。順序の詳細は個別の依存関係によって決める。
+プロジェクト基盤を先に整え、PommeColorScheme と PommeTypography を別々の Issue / ファイル / PR として進める。PommeTheme は両方に依存する。依存が解消したコンポーネントから並行開発する。Form / List / Section の共有描画基盤は先に設計し、必要な依存を Issue に明示する。順序の詳細は個別の依存関係によって決める。
 
 ## 4. Compose Preview と PR 画像（必須）
 
 ### Preview の定義
 
 - 全 UI コンポーネントに、実装する Style ごとの独立した Preview 関数をコンポーネントと同じファイルに定義する。Style のないものも Preview 必須。
+- PommeTypography も全11種類の TextStyle ごとの個別 Preview と Light / Dark 双方の画像添付を必須とする（最低22確認単位）。基盤型の Preview は後続 PommeTheme への依存を作らず、実際の基盤型を使用して標準 Compose で描画し、テーマ統合後に統合検証する。
 - 各 Preview は Light / Dark 両テーマを描画可能にする。共通の multipreview annotation 等を利用してよい。
 - 通常・無効・選択・入力状態、テキスト・アイコン、長文等の必要な状態は Issue に定め、同一 Style の Preview 内で比較可能にしてよい。
 - Automatic 等、Form / Toolbar / 通常画面で外観が異なる場合は、必要な文脈それぞれで Light / Dark を確認する。

@@ -29,7 +29,7 @@
 
 - 見た目だけでなく、利用側のコードも SwiftUI のように構造と意図を簡潔に表現できること。対応する公開 API の名称、意味、構成、文脈による既定スタイルを維持し、独自の同義語を導入しない。
 - [API 要件・利用イメージ](api-design.md) の命名方針と構造を遵守する。コード例は設計の基準であり、未確定の関数シグネチャを承認するものではない。
-- 公開 UI コンポーネント名は一律 Pomme 接頭辞を付ける。テーマは PommeTheme、カラースキームは PommeColorScheme とする。
+- 公開 UI コンポーネント名は一律 Pomme 接頭辞を付ける。テーマは PommeTheme、カラースキームは PommeColorScheme、Typography は PommeTypography とする。
 - 特に PommeForm / PommeList / PommeSection と PommeScaffold の toolbar / navigationTitle は Compose の Scope を活用し、親子関係や配置の文脈に沿って宣言的に構築できるよう設計する。
 - PommeForm / PommeSection では Pomme の入力・操作コンポーネントや標準 Compose の Text、Row、Column、Box 等を直接配置し、原則として各直接の子レイアウトを一行として扱えること。専用の PommeRow は公開対象外とする。
 - 複数要素を一行にまとめる場合は標準のレイアウトコンポーネントを利用する。行の余白、最低高さ、区切り線等の標準装飾は親が管理し、個別調整が必要な場合は Modifier 拡張を優先して検討する。
@@ -58,6 +58,14 @@
 | セクション背景 | #FFFFFF | #1C1C1E |
 
 初期の公開カラースキームはこの4役割を基本とする。文字、区切り線、プレースホルダー、無効状態、エラー等に必要な内部色は標準機能を活用し、公開色の増設を当然としない。壁紙由来の Dynamic Color で意図した配色を上書きしない。Material 3 を利用する箇所もテーマと整合させる。
+
+## Typography
+
+- SwiftUI の Font.TextStyle の全11種類を PommeTypography のプロパティとして提供する。名称は largeTitle / title / title2 / title3 / headline / body / callout / subheadline / footnote / caption / caption2。Material 由来の名称や独自の同義語に置き換えない。
+- iOS の標準 Dynamic Type サイズを基準とした fontSize / lineHeight を sp で定義する。Android のシステムフォントとフォント倍率に追従し、Apple 固有フォントの再配布や iOS の Dynamic Type 段階そのものの独自再実装は行わない。
+- Compose 標準 TextStyle と Text を利用する。PommeTheme.typography から参照でき、テーマで上書きできる構成とする。PommeText や独自フォント型・enum は設けない。
+- コンポーネントの既定書体はテーマと表示文脈で解決する。利用側に毎回 fontSize を指定させない。具体的な対応・サイズ表は [API 要件・利用イメージ](api-design.md#typography) を参照する。
+- PommeTypography は独立した1ファイル・1 Issue・1 PR とする。全11種類ごとに個別 Preview を定義し、Light / Dark 双方の実画像を PR 本文に添付する。
 
 ## グラスモーフィズム（初期範囲）
 
