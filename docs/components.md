@@ -8,7 +8,7 @@
 
 | 公開型・コンポーネント | 責務 |
 | --- | --- |
-| PommeColorScheme | 4つの公開色の役割、ライト・ダークの配色 |
+| PommeColorScheme | 6つの公開色の役割、ライト・ダークの配色 |
 | PommeTypography | SwiftUI Font.TextStyle に対応する11種類の Compose TextStyle |
 | PommeTheme | ColorScheme と Typography の提供、テーマ・既定書体の適用 |
 

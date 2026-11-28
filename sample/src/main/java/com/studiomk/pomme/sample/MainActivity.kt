@@ -5,7 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -14,6 +20,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.studiomk.pomme.PommeColorScheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,9 +34,52 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 internal fun PommeSampleContent(darkTheme: Boolean) {
+    val colorScheme = if (darkTheme) PommeColorScheme.dark() else PommeColorScheme.light()
+
     MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            Text(text = "Pomme Compose sample")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorScheme.background)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            Text(
+                text = "PommeColorScheme",
+                color = colorScheme.primary,
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            Text(text = "Primary text", color = colorScheme.primary)
+            Text(text = "Secondary text", color = colorScheme.secondary)
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = colorScheme.groupedBackground,
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(text = "Grouped background", color = colorScheme.primary)
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = colorScheme.secondaryGroupedBackground,
+                        shape = RoundedCornerShape(12.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Text(
+                                text = "Secondary grouped background",
+                                color = colorScheme.primary,
+                            )
+                            Text(text = "Accent color", color = colorScheme.accentColor)
+                        }
+                    }
+                }
+            }
         }
     }
 }
