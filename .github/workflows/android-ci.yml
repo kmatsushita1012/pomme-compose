@@ -39,13 +39,24 @@ jobs:
       - name: Lint both modules
         run: ./gradlew --no-daemon --stacktrace :pomme:lintDebug :sample:lintDebug
 
-      - name: Run unit tests and create coverage reports
-        run: >-
-          ./gradlew --no-daemon --stacktrace
-          :pomme:testDebugUnitTest
-          :sample:testDebugUnitTest
-          :pomme:createDebugUnitTestCoverageReport
-          :sample:createDebugUnitTestCoverageReport
+      - name: Run unit tests
+        run: ./gradlew --no-daemon --stacktrace :pomme:testDebugUnitTest :sample:testDebugUnitTest
+
+      - name: Create coverage reports when execution data exists
+        run: |
+          coverage_tasks=()
+          for module in pomme sample; do
+            coverage_file="${module}/build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+            if [[ -f "${coverage_file}" ]]; then
+              coverage_tasks+=(":${module}:createDebugUnitTestCoverageReport")
+            fi
+          done
+
+          if ((${#coverage_tasks[@]})); then
+            ./gradlew --no-daemon --stacktrace "${coverage_tasks[@]}"
+          else
+            echo "::notice::No unit-test coverage data exists yet; report generation was skipped."
+          fi
 
       - name: Upload unit test coverage reports
         if: always()

@@ -99,10 +99,11 @@ flowchart LR
 ./gradlew :pomme:assembleDebug :sample:assembleDebug
 ./gradlew :pomme:lintDebug :sample:lintDebug
 ./gradlew :pomme:testDebugUnitTest :sample:testDebugUnitTest
-./gradlew :pomme:createDebugUnitTestCoverageReport :sample:createDebugUnitTestCoverageReport
 ./gradlew :sample:connectedDebugAndroidTest
 ```
 
+unit test の実行データがあるモジュールでは、`./gradlew :<module>:createDebugUnitTestCoverageReport` で HTML レポートを生成する。CI はレポートを生成できた場合に artifact として保存する。
+
 instrumentation test は API 36 の Android Emulator で実行する。ローカルでは起動済み Emulator または接続済み Android 端末が必要。
 
-非 UI ロジックの行カバレッジは 90% 以上を目標とする。debug unit test coverage を両モジュールで有効にし、CI run に `unit-test-coverage-reports` artifact として HTML レポートを保存する。レビュー時にレポートの非 UI ロジックの行カバレッジを確認する。UI の描画・Compose コンポーネント自体はこの目標の対象に含めない。現在の初期構成には非 UI ロジックがないため、90% を CI の失敗閾値にはしていない。
+非 UI ロジックの行カバレッジは 90% 以上を目標とする。debug unit test coverage を両モジュールで有効にし、テスト実行データがあるときは CI run に `unit-test-coverage-reports` artifact として HTML レポートを保存する。レビュー時にレポートの非 UI ロジックの行カバレッジを確認する。UI の描画・Compose コンポーネント自体はこの目標の対象に含めない。現在の初期構成には unit test 実行データがないため、レポート生成をスキップし、90% を CI の失敗閾値にはしていない。
