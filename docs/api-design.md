@@ -321,17 +321,28 @@ UIKit の title1 / caption1 ではなく SwiftUI の title / caption を使用�
 ```kotlin
 @Immutable
 data class PommeTypography(
-    val largeTitle: TextStyle,
-    val title: TextStyle,
-    val title2: TextStyle,
-    val title3: TextStyle,
-    val headline: TextStyle,
-    val body: TextStyle,
-    val callout: TextStyle,
-    val subheadline: TextStyle,
-    val footnote: TextStyle,
-    val caption: TextStyle,
-    val caption2: TextStyle
+    val largeTitle: TextStyle = TextStyle(fontSize = 34.sp, lineHeight = 41.sp, fontWeight = FontWeight.Normal),
+    val title: TextStyle = TextStyle(fontSize = 28.sp, lineHeight = 34.sp, fontWeight = FontWeight.Normal),
+    val title2: TextStyle = TextStyle(fontSize = 22.sp, lineHeight = 28.sp, fontWeight = FontWeight.Normal),
+    val title3: TextStyle = TextStyle(fontSize = 20.sp, lineHeight = 25.sp, fontWeight = FontWeight.Normal),
+    val headline: TextStyle = TextStyle(fontSize = 17.sp, lineHeight = 22.sp, fontWeight = FontWeight.SemiBold),
+    val body: TextStyle = TextStyle(fontSize = 17.sp, lineHeight = 22.sp, fontWeight = FontWeight.Normal),
+    val callout: TextStyle = TextStyle(fontSize = 16.sp, lineHeight = 21.sp, fontWeight = FontWeight.Normal),
+    val subheadline: TextStyle = TextStyle(fontSize = 15.sp, lineHeight = 20.sp, fontWeight = FontWeight.Normal),
+    val footnote: TextStyle = TextStyle(fontSize = 13.sp, lineHeight = 18.sp, fontWeight = FontWeight.Normal),
+    val caption: TextStyle = TextStyle(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Normal),
+    val caption2: TextStyle = TextStyle(fontSize = 11.sp, lineHeight = 13.sp, fontWeight = FontWeight.Normal)
+)
+```
+
+`PommeTypography()` は上記の標準値を返す。任意の名前付き引数または data class の `copy` で個別の `TextStyle` を置き換え、置き換えた値は暗黙にマージ・補正しない。標準値で明示する属性は `fontSize`・`lineHeight`・`fontWeight` のみとし、他属性は Compose の `TextStyle` の未指定値に委ねる。`sp` を使用して Android のフォント倍率に追従する。Light / Dark で同じ標準値を使い、Typography 自体は色やテーマ状態を保持しない。`PommeTheme` は `PommeTypography()` を既定値として使用する。
+
+```kotlin
+val typography = PommeTypography()
+Text("Sample title", style = typography.title)
+
+val customized = PommeTypography(
+    body = typography.body.copy(fontSize = 18.sp, lineHeight = 24.sp)
 )
 ```
 
@@ -340,17 +351,17 @@ PommeTheme(
     colorScheme = colorScheme,
     typography = typography
 ) {
-    Text("祭典情報", style = PommeTheme.typography.title)
-    Text("設定内容を変更できます。", style = PommeTheme.typography.footnote)
+    Text("Sample title", style = PommeTheme.typography.title)
+    Text("Sample body text", style = PommeTheme.typography.footnote)
     Text(
-        "掛川祭",
+        "Another heading",
         style = PommeTheme.typography.title2,
         fontWeight = FontWeight.Bold
     )
 }
 ```
 
-PommeTheme.typography で参照し、Compose 標準の TextStyle / Text / FontWeight 等を使用する。PommeText や独自フォント型・enum は設けない。既定値の生成方法、テーマの内部提供方式、TextStyle の追加プロパティ等は詳細設計で決定する。
+PommeTheme.typography で参照し、Compose 標準の TextStyle / Text / FontWeight 等を使用する。PommeText や独自フォント型・enum は設けない。標準値を提供するコンストラクタ、標準値で明示する属性、および PommeTheme での既定値は上記のとおりとする。
 
 #### 文脈による既定書体
 

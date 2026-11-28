@@ -5,15 +5,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.studiomk.pomme.PommeTypography
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +41,40 @@ class MainActivity : ComponentActivity() {
 internal fun PommeSampleContent(darkTheme: Boolean) {
     MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
         Surface(modifier = Modifier.fillMaxSize()) {
-            Text(text = "Pomme Compose sample")
+            val typography = PommeTypography()
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .safeDrawingPadding()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(text = "PommeTypography", style = typography.headline)
+                PommeTypographySampleLine("largeTitle", typography.largeTitle, typography.caption2)
+                PommeTypographySampleLine("title", typography.title, typography.caption2)
+                PommeTypographySampleLine("title2", typography.title2, typography.caption2)
+                PommeTypographySampleLine("title3", typography.title3, typography.caption2)
+                PommeTypographySampleLine("headline", typography.headline, typography.caption2)
+                PommeTypographySampleLine("body", typography.body, typography.caption2)
+                PommeTypographySampleLine("callout", typography.callout, typography.caption2)
+                PommeTypographySampleLine("subheadline", typography.subheadline, typography.caption2)
+                PommeTypographySampleLine("footnote", typography.footnote, typography.caption2)
+                PommeTypographySampleLine("caption", typography.caption, typography.caption2)
+                PommeTypographySampleLine("caption2", typography.caption2, typography.caption2)
+            }
         }
+    }
+}
+
+@Composable
+private fun PommeTypographySampleLine(label: String, style: TextStyle, labelStyle: TextStyle) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        BasicText(text = label, modifier = Modifier.width(84.dp), style = labelStyle)
+        BasicText(text = "Sample text", style = style)
     }
 }
 
