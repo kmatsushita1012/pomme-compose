@@ -10,6 +10,10 @@ Close #<!-- 実装Issue番号。親Issueを誤ってCloseしない -->
 
 - [ ] <!-- 実行したテスト/CIと結果。未実行なら理由を明示 -->
 
+## Compose Preview（UI変更時）
+
+<!-- docs/development-workflow.md に従い、全 Style / 文脈の Light・Dark 画像を SHA 固定 URL で本文に埋め込む -->
+
 ## 懸念・互換性
 
 <!-- データ移行、セキュリティ、既知の制限。特になければ「なし」 -->
