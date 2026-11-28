@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.screenshot)
 }
 
 android {
@@ -30,30 +30,25 @@ android {
     buildFeatures {
         compose = true
     }
-
-    experimentalProperties["android.experimental.enableScreenshotTest"] = true
 }
 
 kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
     }
-}
 
-dependencies {
-    api(platform(libs.compose.bom))
-    api(libs.compose.foundation)
-    api(libs.compose.runtime)
-    api(libs.compose.ui)
-    compileOnly(libs.compose.ui.tooling.preview)
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.compose.mp.foundation)
+            api(libs.compose.mp.runtime)
+            api(libs.compose.mp.ui)
+            implementation(libs.compose.mp.ui.tooling.preview)
+        }
 
-    screenshotTestImplementation(platform(libs.compose.bom))
-    screenshotTestImplementation(libs.compose.ui.tooling)
-    screenshotTestImplementation(libs.screenshot.validation.api)
-
-    testImplementation(libs.junit)
-
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.runner)
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+    }
 }

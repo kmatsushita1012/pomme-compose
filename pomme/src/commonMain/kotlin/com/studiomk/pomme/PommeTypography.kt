@@ -1,6 +1,5 @@
 package com.studiomk.pomme
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -14,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,97 +53,102 @@ data class PommeTypography(
     val caption2: TextStyle = TextStyle(fontSize = 11.sp, lineHeight = 13.sp, fontWeight = FontWeight.Normal)
 )
 
+@Preview(
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
+    widthDp = 360,
+    heightDp = 96,
+    showBackground = true,
+)
+@Preview(
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    widthDp = 360,
+    heightDp = 96,
+    showBackground = true,
+)
+internal annotation class PommeTypographyLightDarkPreview
+
 @Composable
 private fun PommeTypographyStylePreview(style: TextStyle) {
-    val isDarkTheme = isSystemInDarkTheme()
+    val darkTheme = isSystemInDarkTheme()
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(if (isDarkTheme) Color(0xFF121212) else Color.White)
+            .background(if (darkTheme) Color(0xFF121212) else Color.White)
             .padding(24.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         BasicText(
             text = "Sample text",
             style = style.copy(
-                color = if (isDarkTheme) Color(0xFFE6E1E5) else Color(0xFF1B1B1B)
+                color = if (darkTheme) Color(0xFFE6E1E5) else Color(0xFF1B1B1B)
             )
         )
     }
 }
 
-@Preview(name = "Large Title Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Large Title Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyLargeTitlePreview() {
     PommeTypographyStylePreview(PommeTypography().largeTitle)
 }
 
-@Preview(name = "Title Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Title Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyTitlePreview() {
     PommeTypographyStylePreview(PommeTypography().title)
 }
 
-@Preview(name = "Title 2 Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Title 2 Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyTitle2Preview() {
     PommeTypographyStylePreview(PommeTypography().title2)
 }
 
-@Preview(name = "Title 3 Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Title 3 Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyTitle3Preview() {
     PommeTypographyStylePreview(PommeTypography().title3)
 }
 
-@Preview(name = "Headline Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Headline Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyHeadlinePreview() {
     PommeTypographyStylePreview(PommeTypography().headline)
 }
 
-@Preview(name = "Body Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Body Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyBodyPreview() {
     PommeTypographyStylePreview(PommeTypography().body)
 }
 
-@Preview(name = "Callout Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Callout Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyCalloutPreview() {
     PommeTypographyStylePreview(PommeTypography().callout)
 }
 
-@Preview(name = "Subheadline Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Subheadline Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographySubheadlinePreview() {
     PommeTypographyStylePreview(PommeTypography().subheadline)
 }
 
-@Preview(name = "Footnote Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Footnote Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyFootnotePreview() {
     PommeTypographyStylePreview(PommeTypography().footnote)
 }
 
-@Preview(name = "Caption Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Caption Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyCaptionPreview() {
     PommeTypographyStylePreview(PommeTypography().caption)
 }
 
-@Preview(name = "Caption 2 Light", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Caption 2 Dark", showBackground = true, widthDp = 360, heightDp = 96, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PommeTypographyLightDarkPreview
 @Composable
 internal fun PommeTypographyCaption2Preview() {
     PommeTypographyStylePreview(PommeTypography().caption2)

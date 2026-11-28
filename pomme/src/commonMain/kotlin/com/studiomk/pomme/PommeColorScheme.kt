@@ -2,6 +2,7 @@ package com.studiomk.pomme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.AndroidUiModes
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
@@ -72,35 +74,33 @@ public data class PommeColorScheme(
 }
 
 @Preview(
-    name = "PommeColorScheme Light",
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
     showBackground = true,
     widthDp = 360,
     heightDp = 480,
 )
-@Composable
-internal fun PommeColorSchemeLightPreview() {
-    PommeColorSchemePreview(
-        colorScheme = PommeColorScheme.light(),
-        themeName = "Light",
-    )
-}
-
 @Preview(
-    name = "PommeColorScheme Dark",
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
     showBackground = true,
     widthDp = 360,
     heightDp = 480,
 )
+internal annotation class PommeColorSchemeLightDarkPreview
+
+@PommeColorSchemeLightDarkPreview
 @Composable
-internal fun PommeColorSchemeDarkPreview() {
-    PommeColorSchemePreview(
-        colorScheme = PommeColorScheme.dark(),
-        themeName = "Dark",
+internal fun PommeColorSchemePreview() {
+    val darkTheme = isSystemInDarkTheme()
+    PommeColorSchemePreviewContent(
+        colorScheme = if (darkTheme) PommeColorScheme.dark() else PommeColorScheme.light(),
+        themeName = if (darkTheme) "Dark" else "Light",
     )
 }
 
 @Composable
-private fun PommeColorSchemePreview(
+private fun PommeColorSchemePreviewContent(
     colorScheme: PommeColorScheme,
     themeName: String,
 ) {
@@ -208,10 +208,13 @@ private fun Color.contentColor(): Color = luminance().contentColor()
 private fun Float.contentColor(): Color = if (this >= 0.175f) Color.Black else Color.White
 
 private fun Color.toHex(): String {
-    val red = (red * 255).roundToInt()
-    val green = (green * 255).roundToInt()
-    val blue = (blue * 255).roundToInt()
-    return "%02X%02X%02X".format(red, green, blue)
+    fun Float.toHexByte(): String {
+        val value = (this * 255).roundToInt().coerceIn(0, 255)
+        val digits = "0123456789ABCDEF"
+        return "${digits[value shr 4]}${digits[value and 0x0F]}"
+    }
+
+    return "${red.toHexByte()}${green.toHexByte()}${blue.toHexByte()}"
 }
 
 private fun Color.toPreviewValue(): String {

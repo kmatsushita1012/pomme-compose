@@ -11,7 +11,7 @@
 
 ## 対象範囲
 
-- Android / Jetpack Compose。Kotlin Multiplatform や iOS での直接動作は初期対象外。
+- Kotlin Multiplatform / Compose Multiplatform を構成の基盤とする。初期ターゲットは Android のみとし、iOS 等の Android 以外での直接動作は対象外。
 - テーマ、入力系、リスト系（List / Form / Section）、スクリーン系（Scaffold / Toolbar）を主要対象とする。
 - ダイアログ、アイコン等は cupertino-compose の依存解消と汎用性に必要な範囲で対象を精査する。
 - ライブラリ本体と独立したサンプルアプリを用意する。

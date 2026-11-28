@@ -17,6 +17,7 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 ## 2. 実装ルール
 
 - MyKanban の既存ワークフローに従い、原則 1 コンポーネント 1 Issue・1 ファイル・1 PR。対象固有の型・Scope・Preview は同一ファイルに置く。共通基盤、共有処理、テスト等の例外は docs/development-workflow.md に従う。
+- ライブラリの共通 UI/API は `commonMain`、共通テストは `commonTest` に置く。初期の Kotlin Multiplatform target は Android のみとし、Android 固有実装は `androidMain` に置く。Compose Preview は共通ソースのコンポーネントと同じファイルに定義する。
 - Typography は PommeTypography の全11種類の SwiftUI 準拠 TextStyle を用い、PommeTheme.typography と Compose 標準 Text / LocalTextStyle / ProvideTextStyle 等を活用する。個別コンポーネントにフォントサイズを重複定義せず、明示 style と Android のフォント倍率を尊重する。
 - 公開 API は事前合意した IF を実装し、公開が不要な宣言は internal / private とする。公開 API には KDoc を記載する。安定版リリース後の破壊的変更は原則禁止。外部依存追加は事前合意が必要。
 - 実装担当は PR 作成と Preview 画像の添付まで担当する。依存する Issue は GitHub の Blocked by で管理し、未解決の依存を無視して着手しない。
@@ -46,12 +47,14 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 - 各コンポーネントを単独で確認できる Preview を用意する。カタログや親画面の Preview だけで済ませない。
 - Preview には本番と同じテーマ・コンポーネントを利用する。Preview 専用の見た目を再実装しない。
 - 実装した全 Style について個別の Preview 関数を同じコンポーネントファイルに定義する。Style を持たないコンポーネントも Preview は必須。
+- 1つのStyleは1つのPreview関数で表す。Light / Darkは標準の `@PreviewLightDark` またはLight / Darkを含むMultiPreview annotationで構成し、`isSystemInDarkTheme()` からテーマを取得する。Light用とDark用に同じ描画関数を分けて定義しない。
 - PommeTypography は11種類の TextStyle ごとに個別 Preview を同一ファイルに定義し、Light / Dark 両方の実画像（最低22確認単位）を PR 本文に添付する。基盤型が後続 PommeTheme に依存しないよう、未実装のテーマを先行して作成せず実際の TextStyle で描画する。
 - 各 Style の Light / Dark 双方を実際に描画・撮影する。Automatic 等で外観が変わる文脈ごとにも両テーマを確認する。
 - コンポーネントに応じて、通常、無効、選択済み・未選択、未入力・入力済み等の主要状態を確認可能にする。関連するスタイルやレイアウトの違いも対象とする。
 - サンプルデータで自立して描画できるようにし、ネットワーク、認証、実際の利用アプリの ViewModel 等を必要としない。
 - PommeButton の Glass は単独の Preview と Toolbar 内の Automatic の Preview を用意する。ライト・ダーク、明示スタイルによる上書き、無効状態、異なる背景での可読性を確認できるようにする。
 - Preview のためだけに公開 IF を追加・変更しない。配置や共通化方式は詳細設計に従う。
+- KMP screenshot test source set は現行 screenshot Gradle plugin でコンパイルされないため、`:sample` の Android screenshot testから画像を生成する。UIコンポーネントは実際のComposableを直接描画する。描画Composableを持たない基盤型に限り、公開値を表示する最小限のfixtureをscreenshotTest source setに置いてよい。fixtureを通常のsample mainへ置かず、UIコンポーネントの描画を複製しない。
 - Preview が存在しない、対象の状態が確認できない、またはコンパイルできない状態で実装を完了扱いにしない。
 - 各 Style × Light / Dark（必要な文脈を含む）の実際の Preview 画像を PR 本文に必ず添付し、Style とテーマを識別できるようにする。画像は当該 PR の実装から生成したものとし、モック・既存画像・ビルド成功・外部リンクのみで代替しない。
 - 描画環境や画像添付手段がない場合は阻害事項を報告し、実装完了・レビュー通過・マージ可能とは扱わない。画像の不足は解消する必要がある。
