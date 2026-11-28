@@ -122,13 +122,31 @@ internal fun PommeThemeScreenshotFixture() {
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = "System ${if (darkTheme) "Dark" else "Light"}",
+                    text = "PommeTheme · ${if (darkTheme) "Dark" else "Light"}",
                     style = PommeTheme.typography.headline,
                 )
                 Text(text = "Default body text")
                 Text(text = "Explicit title style", style = PommeTheme.typography.title)
                 Text(text = "Explicit bold weight", fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
 
+@Composable
+internal fun PommeThemeOverrideScreenshotFixture() {
+    val darkTheme = isSystemInDarkTheme()
+
+    MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
+        PommeTheme {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PommeTheme.colorScheme.background)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(text = "Parent theme before override")
                 PommeTheme(
                     colorScheme = PommeColorScheme.light().copy(
                         accentColor = Color(0xFF006B8F),
@@ -153,7 +171,7 @@ internal fun PommeThemeScreenshotFixture() {
                     }
                 }
 
-                Text(text = "Outer theme restored")
+                Text(text = "Parent theme after override")
             }
         }
     }
