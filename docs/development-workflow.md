@@ -41,18 +41,15 @@ MyKanban の既存 Issue テンプレートを尊重し、その項目内に次�
 
 ### 実画像の生成と PR への添付
 
-- Preview の画像生成には [Compose Preview Screenshot Testing の Gradle plugin](https://developer.android.com/studio/preview/compose-screenshot-testing) を使う。現行 AGP 8.11.1 では [AGP test suites（AGP 9.5.0-alpha03 以降）](https://developer.android.com/studio/preview/compose-screenshot-testing-with-testsuites) を使えないため、`com.android.compose.screenshot` `0.0.1-alpha16` を採用する。Android 公式資料では standalone plugin は非メンテナンス扱いのため、AGP を更新する別タスクで test suites への移行を検討する。plugin は screenshot test source set のみに適用し、アプリ実行時の依存に含めない。
-- Android Studio に表示する `@Preview` はコンポーネントと同じファイルに置く。画像生成時は `src/screenshotTest` に `@PreviewTest` と `@Preview` を付けた関数を定義し、その関数から実際のコンポーネント Preview を呼び出す。`@PreviewTest` 関数を追加・変更したら、対象モジュールで次を実行する。
+- Preview の画像生成には [Compose Preview Screenshot Testing の Gradle plugin](https://developer.android.com/studio/preview/compose-screenshot-testing) を使う。現行 AGP 8.11.1 では [AGP test suites（AGP 9.5.0-alpha03 以降）](https://developer.android.com/studio/preview/compose-screenshot-testing-with-testsuites) を使えないため、`com.android.compose.screenshot` `0.0.1-alpha16` を採用する。Android 公式資料では standalone plugin は非メンテナンス扱いのため、AGP を更新する別タスクで test suites への移行を検討する。plugin は Android `:sample` の screenshot test source set のみに適用し、アプリ実行時の依存に含めない。現在の plugin は KMP ライブラリの screenshot test source set をコンパイルしないため、`:pomme` には適用しない。
+- Android Studio に表示する `@Preview` は `commonMain` の各コンポーネントと同じファイルに置く。画像生成時は `:sample` の `src/screenshotTest` に Android 用の薄い adapter と `@PreviewTest` 関数を定義し、Pomme の実際の公開 API と値を描画する。adapter にコンポーネントの実装や別の公開 API を追加しない。テスト関数を追加・変更したら次を実行する。
 
 ```shell
 ./gradlew :sample:updateDebugScreenshotTest
 ./gradlew :sample:validateDebugScreenshotTest
-# :pomme の Preview を更新した場合
-./gradlew :pomme:updateDebugScreenshotTest
-./gradlew :pomme:validateDebugScreenshotTest
 ```
 
-- 生成画像は `<module>/src/screenshotTestDebug/reference/` に保存される。Light / Dark と全 Style / 文脈の PNG をコードと同じ PR にコミットし、実行結果の HTML report を確認する。画像が欠けている、空、または期待する Preview 名と対応しない場合は PR に含めない。
+- 生成画像は `sample/src/screenshotTestDebug/reference/` に保存される。Light / Dark と全 Style / 文脈の PNG をコードと同じ PR にコミットし、実行結果の HTML report を確認する。画像が欠けている、空、または期待する Preview 名と対応しない場合は PR に含めない。
 - PR 本文では各 PNG のパスを、PR に含まれるコミット SHA に固定した `raw.githubusercontent.com/<owner>/<repo>/<sha>/<path>.png` へ変換し、`![説明](URL)` で表に埋め込む。URL 内の空白は `%20` にエンコードする。これで画像を対象コードの HEAD に結び付け、GitHub 上に表示できる。PR のコード・画像を更新したら最新 HEAD の SHA と URL に入れ替える。
 - Push 後に各画像 URL へ `curl -fI` を実行し、HTTP 成功を確認する。PR 本文にも同じ URL を埋め込み、GitHub 上で画像が表示されることを確認する。URL だけの箇条書きや artifact へのリンクでは PR 画像の要件を満たさない。
 - Gradle の画像生成・比較に失敗する、期待画像が出ない、または画像 URL が取得できない場合は、解消するまで PR を完了扱いにしない。失敗したコマンドと状態を PR の検証結果に記載する。

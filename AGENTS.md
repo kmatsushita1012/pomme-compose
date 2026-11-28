@@ -17,7 +17,7 @@
 
 ## 基本原則
 
-- Android 向け Jetpack Compose の汎用 UI ライブラリとして開発する。
+- Kotlin Multiplatform / Compose Multiplatform を使う Android 向け Jetpack Compose の汎用 UI ライブラリとして開発する。現時点で追加するターゲットは Android のみとする。
 - iOS の標準 UI をデザイン・操作感の基準とし、Android の標準的な入力・アクセシビリティ・システム操作と両立させる。
 - Compose の標準機能を優先し、cupertino-compose には依存しない。
 - 特定アプリの業務ロジック、状態管理基盤、ルーティングを持ち込まない。

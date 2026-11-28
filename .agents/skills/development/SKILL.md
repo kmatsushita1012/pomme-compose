@@ -17,6 +17,7 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 ## 2. 実装ルール
 
 - MyKanban の既存ワークフローに従い、原則 1 コンポーネント 1 Issue・1 ファイル・1 PR。対象固有の型・Scope・Preview は同一ファイルに置く。共通基盤、共有処理、テスト等の例外は docs/development-workflow.md に従う。
+- ライブラリの共通 UI/API は `commonMain`、共通テストは `commonTest` に置く。初期の Kotlin Multiplatform target は Android のみとし、Android 固有実装は `androidMain` に置く。Compose Preview は共通ソースのコンポーネントと同じファイルに定義する。
 - Typography は PommeTypography の全11種類の SwiftUI 準拠 TextStyle を用い、PommeTheme.typography と Compose 標準 Text / LocalTextStyle / ProvideTextStyle 等を活用する。個別コンポーネントにフォントサイズを重複定義せず、明示 style と Android のフォント倍率を尊重する。
 - 公開 API は事前合意した IF を実装し、公開が不要な宣言は internal / private とする。公開 API には KDoc を記載する。安定版リリース後の破壊的変更は原則禁止。外部依存追加は事前合意が必要。
 - 実装担当は PR 作成と Preview 画像の添付まで担当する。依存する Issue は GitHub の Blocked by で管理し、未解決の依存を無視して着手しない。
@@ -52,6 +53,7 @@ Pomme Compose の開発作業で必ず適用する。利用者向けの資料で
 - サンプルデータで自立して描画できるようにし、ネットワーク、認証、実際の利用アプリの ViewModel 等を必要としない。
 - PommeButton の Glass は単独の Preview と Toolbar 内の Automatic の Preview を用意する。ライト・ダーク、明示スタイルによる上書き、無効状態、異なる背景での可読性を確認できるようにする。
 - Preview のためだけに公開 IF を追加・変更しない。配置や共通化方式は詳細設計に従う。
+- KMP screenshot test source set は現行 screenshot Gradle plugin でコンパイルされないため、実画像は `:sample` の Android screenshot test adapter から Pomme の公開 API を描画して生成する。adapter にコンポーネントの実装を複製しない。
 - Preview が存在しない、対象の状態が確認できない、またはコンパイルできない状態で実装を完了扱いにしない。
 - 各 Style × Light / Dark（必要な文脈を含む）の実際の Preview 画像を PR 本文に必ず添付し、Style とテーマを識別できるようにする。画像は当該 PR の実装から生成したものとし、モック・既存画像・ビルド成功・外部リンクのみで代替しない。
 - 描画環境や画像添付手段がない場合は阻害事項を報告し、実装完了・レビュー通過・マージ可能とは扱わない。画像の不足は解消する必要がある。

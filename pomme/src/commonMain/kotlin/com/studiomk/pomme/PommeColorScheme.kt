@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
@@ -208,10 +208,13 @@ private fun Color.contentColor(): Color = luminance().contentColor()
 private fun Float.contentColor(): Color = if (this >= 0.175f) Color.Black else Color.White
 
 private fun Color.toHex(): String {
-    val red = (red * 255).roundToInt()
-    val green = (green * 255).roundToInt()
-    val blue = (blue * 255).roundToInt()
-    return "%02X%02X%02X".format(red, green, blue)
+    fun Float.toHexByte(): String {
+        val value = (this * 255).roundToInt().coerceIn(0, 255)
+        val digits = "0123456789ABCDEF"
+        return "${digits[value shr 4]}${digits[value and 0x0F]}"
+    }
+
+    return "${red.toHexByte()}${green.toHexByte()}${blue.toHexByte()}"
 }
 
 private fun Color.toPreviewValue(): String {
