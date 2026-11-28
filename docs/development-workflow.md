@@ -42,7 +42,8 @@ MyKanban の既存 Issue テンプレートを尊重し、その項目内に次�
 ### 実画像の生成と PR への添付
 
 - Preview の画像生成には [Compose Preview Screenshot Testing の Gradle plugin](https://developer.android.com/studio/preview/compose-screenshot-testing) を使う。現行 AGP 8.11.1 では [AGP test suites（AGP 9.5.0-alpha03 以降）](https://developer.android.com/studio/preview/compose-screenshot-testing-with-testsuites) を使えないため、`com.android.compose.screenshot` `0.0.1-alpha16` を採用する。Android 公式資料では standalone plugin は非メンテナンス扱いのため、AGP を更新する別タスクで test suites への移行を検討する。plugin は Android `:sample` の screenshot test source set のみに適用し、アプリ実行時の依存に含めない。現在の plugin は KMP ライブラリの screenshot test source set をコンパイルしないため、`:pomme` には適用しない。
-- Android Studio に表示する `@Preview` は `commonMain` の各コンポーネントと同じファイルに置く。画像生成時は `:sample` の `src/screenshotTest` に Android 用の薄い adapter と `@PreviewTest` 関数を定義し、Pomme の実際の公開 API と値を描画する。adapter にコンポーネントの実装や別の公開 API を追加しない。テスト関数を追加・変更したら次を実行する。
+- Android Studio に表示する `@Preview` は `commonMain` の各コンポーネントと同じファイルに置く。各 Style は1つのComposable Preview関数で表し、Light / Dark は `@PreviewLightDark` またはLight / Darkの `@Preview` をまとめたMultiPreview annotationで構成する。プレビュー内の配色は `isSystemInDarkTheme()` から取得し、Light / Darkごとに同じ描画関数を重複定義しない。
+- 画像生成時は `:sample` の `src/screenshotTest` に `@PreviewTest` 関数を定義する。実際のUIコンポーネントは本物のComposableを直接描画する。`PommeColorScheme` / `PommeTypography` のように描画Composableを持たない基盤型に限り、公開値を表示する最小限のfixtureをテストソースに置いてよい。fixtureを `src/main` に置いたり、コンポーネントの描画実装を複製したりしない。テスト関数を追加・変更したら次を実行する。
 
 ```shell
 ./gradlew :sample:updateDebugScreenshotTest
@@ -59,6 +60,7 @@ MyKanban の既存 Issue テンプレートを尊重し、その項目内に次�
 - 全 UI コンポーネントに、実装する Style ごとの独立した Preview 関数をコンポーネントと同じファイルに定義する。Style のないものも Preview 必須。
 - PommeTypography も全11種類の TextStyle ごとの個別 Preview と Light / Dark 双方の画像添付を必須とする（最低22確認単位）。基盤型の Preview は後続 PommeTheme への依存を作らず、実際の基盤型を使用して標準 Compose で描画し、テーマ統合後に統合検証する。
 - 各 Preview は Light / Dark 両テーマを描画可能にする。共通の multipreview annotation 等を利用してよい。
+- 1つのStyleに複数のThemeがある場合はPreview関数を分けず、標準の `@PreviewLightDark` またはMultiPreview annotationでまとめる。CMP Preview環境の `isSystemInDarkTheme()` がLight / Darkを反映する。
 - 通常・無効・選択・入力状態、テキスト・アイコン、長文等の必要な状態は Issue に定め、同一 Style の Preview 内で比較可能にしてよい。
 - Automatic 等、Form / Toolbar / 通常画面で外観が異なる場合は、必要な文脈それぞれで Light / Dark を確認する。
 - 本番コンポーネントとテーマを使う。サンプル画面、モック、Preview 専用の外観実装で代用しない。
@@ -116,6 +118,8 @@ flowchart LR
 ./gradlew :pomme:testDebugUnitTest :sample:testDebugUnitTest
 ./gradlew :sample:connectedDebugAndroidTest
 ```
+
+Android targetのみのKMP構成では `:pomme:compileKotlinMetadata` は `SKIPPED` になり、`:pomme:metadataMainClasses` はコンパイル処理を持たない。`commonMain` は `:pomme:compileDebugKotlinAndroid`、`commonTest` は `:pomme:compileDebugUnitTestKotlinAndroid` と `:pomme:testDebugUnitTest` で検証する。metadata compilationを実行するためだけに別targetを追加しない。
 
 unit test の実行データがあるモジュールでは、`./gradlew :<module>:createDebugUnitTestCoverageReport` で HTML レポートを生成する。CI はレポートを生成できた場合に artifact として保存する。
 

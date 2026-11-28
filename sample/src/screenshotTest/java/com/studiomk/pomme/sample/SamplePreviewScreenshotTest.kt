@@ -1,32 +1,30 @@
 package com.studiomk.pomme.sample
 
-import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 
-@PreviewTest
 @Preview(
-    name = "Sample Light",
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
     showBackground = true,
     widthDp = 360,
     heightDp = 640,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
 )
-@Composable
-fun PommeSampleLightScreenshotTest() {
-    PommeSampleLightPreview()
-}
+@Preview(
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 640,
+)
+internal annotation class PommeSampleScreenshotPreviews
 
 @PreviewTest
-@Preview(
-    name = "Sample Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 640,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
+@PommeSampleScreenshotPreviews
 @Composable
-fun PommeSampleDarkScreenshotTest() {
-    PommeSampleDarkPreview()
+fun PommeSampleScreenshotTest() {
+    PommeSampleContent(darkTheme = isSystemInDarkTheme())
 }

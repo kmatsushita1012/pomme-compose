@@ -2,6 +2,7 @@ package com.studiomk.pomme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,35 +74,33 @@ public data class PommeColorScheme(
 }
 
 @Preview(
-    name = "PommeColorScheme Light",
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
     showBackground = true,
     widthDp = 360,
     heightDp = 480,
 )
-@Composable
-internal fun PommeColorSchemeLightPreview() {
-    PommeColorSchemePreview(
-        colorScheme = PommeColorScheme.light(),
-        themeName = "Light",
-    )
-}
-
 @Preview(
-    name = "PommeColorScheme Dark",
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
     showBackground = true,
     widthDp = 360,
     heightDp = 480,
 )
+internal annotation class PommeColorSchemeLightDarkPreview
+
+@PommeColorSchemeLightDarkPreview
 @Composable
-internal fun PommeColorSchemeDarkPreview() {
-    PommeColorSchemePreview(
-        colorScheme = PommeColorScheme.dark(),
-        themeName = "Dark",
+internal fun PommeColorSchemePreview() {
+    val darkTheme = isSystemInDarkTheme()
+    PommeColorSchemePreviewContent(
+        colorScheme = if (darkTheme) PommeColorScheme.dark() else PommeColorScheme.light(),
+        themeName = if (darkTheme) "Dark" else "Light",
     )
 }
 
 @Composable
-private fun PommeColorSchemePreview(
+private fun PommeColorSchemePreviewContent(
     colorScheme: PommeColorScheme,
     themeName: String,
 ) {

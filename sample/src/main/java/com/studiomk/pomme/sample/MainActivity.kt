@@ -1,6 +1,5 @@
 package com.studiomk.pomme.sample
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.studiomk.pomme.PommeColorScheme
@@ -125,25 +125,20 @@ private fun PommeTypographySampleLine(label: String, style: TextStyle, labelStyl
 }
 
 @Preview(
-    name = "Sample Light",
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
     showBackground = true,
     widthDp = 360,
     heightDp = 640,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
-@Composable
-internal fun PommeSampleLightPreview() {
-    PommeSampleContent(darkTheme = false)
-}
-
 @Preview(
-    name = "Sample Dark",
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
     showBackground = true,
     widthDp = 360,
     heightDp = 640,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
-internal fun PommeSampleDarkPreview() {
-    PommeSampleContent(darkTheme = true)
+internal fun PommeSamplePreview() {
+    PommeSampleContent(darkTheme = isSystemInDarkTheme())
 }

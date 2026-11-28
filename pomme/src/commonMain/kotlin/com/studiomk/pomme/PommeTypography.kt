@@ -1,6 +1,7 @@
 package com.studiomk.pomme
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,8 +53,25 @@ data class PommeTypography(
     val caption2: TextStyle = TextStyle(fontSize = 11.sp, lineHeight = 13.sp, fontWeight = FontWeight.Normal)
 )
 
+@Preview(
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
+    widthDp = 360,
+    heightDp = 96,
+    showBackground = true,
+)
+@Preview(
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    widthDp = 360,
+    heightDp = 96,
+    showBackground = true,
+)
+internal annotation class PommeTypographyLightDarkPreview
+
 @Composable
-private fun PommeTypographyStylePreview(style: TextStyle, darkTheme: Boolean) {
+private fun PommeTypographyStylePreview(style: TextStyle) {
+    val darkTheme = isSystemInDarkTheme()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,134 +88,68 @@ private fun PommeTypographyStylePreview(style: TextStyle, darkTheme: Boolean) {
     }
 }
 
-@Preview(name = "Large Title Light", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyLargeTitleLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().largeTitle, darkTheme = false)
+internal fun PommeTypographyLargeTitlePreview() {
+    PommeTypographyStylePreview(PommeTypography().largeTitle)
 }
 
-@Preview(name = "Large Title Dark", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyLargeTitleDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().largeTitle, darkTheme = true)
+internal fun PommeTypographyTitlePreview() {
+    PommeTypographyStylePreview(PommeTypography().title)
 }
 
-@Preview(name = "Title Light", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyTitleLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().title, darkTheme = false)
+internal fun PommeTypographyTitle2Preview() {
+    PommeTypographyStylePreview(PommeTypography().title2)
 }
 
-@Preview(name = "Title Dark", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyTitleDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().title, darkTheme = true)
+internal fun PommeTypographyTitle3Preview() {
+    PommeTypographyStylePreview(PommeTypography().title3)
 }
 
-@Preview(name = "Title 2 Light", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyTitle2LightPreview() {
-    PommeTypographyStylePreview(PommeTypography().title2, darkTheme = false)
+internal fun PommeTypographyHeadlinePreview() {
+    PommeTypographyStylePreview(PommeTypography().headline)
 }
 
-@Preview(name = "Title 2 Dark", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyTitle2DarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().title2, darkTheme = true)
+internal fun PommeTypographyBodyPreview() {
+    PommeTypographyStylePreview(PommeTypography().body)
 }
 
-@Preview(name = "Title 3 Light", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyTitle3LightPreview() {
-    PommeTypographyStylePreview(PommeTypography().title3, darkTheme = false)
+internal fun PommeTypographyCalloutPreview() {
+    PommeTypographyStylePreview(PommeTypography().callout)
 }
 
-@Preview(name = "Title 3 Dark", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyTitle3DarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().title3, darkTheme = true)
+internal fun PommeTypographySubheadlinePreview() {
+    PommeTypographyStylePreview(PommeTypography().subheadline)
 }
 
-@Preview(name = "Headline Light", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyHeadlineLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().headline, darkTheme = false)
+internal fun PommeTypographyFootnotePreview() {
+    PommeTypographyStylePreview(PommeTypography().footnote)
 }
 
-@Preview(name = "Headline Dark", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyHeadlineDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().headline, darkTheme = true)
+internal fun PommeTypographyCaptionPreview() {
+    PommeTypographyStylePreview(PommeTypography().caption)
 }
 
-@Preview(name = "Body Light", showBackground = true, widthDp = 360, heightDp = 96)
+@PommeTypographyLightDarkPreview
 @Composable
-internal fun PommeTypographyBodyLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().body, darkTheme = false)
-}
-
-@Preview(name = "Body Dark", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyBodyDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().body, darkTheme = true)
-}
-
-@Preview(name = "Callout Light", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyCalloutLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().callout, darkTheme = false)
-}
-
-@Preview(name = "Callout Dark", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyCalloutDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().callout, darkTheme = true)
-}
-
-@Preview(name = "Subheadline Light", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographySubheadlineLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().subheadline, darkTheme = false)
-}
-
-@Preview(name = "Subheadline Dark", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographySubheadlineDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().subheadline, darkTheme = true)
-}
-
-@Preview(name = "Footnote Light", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyFootnoteLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().footnote, darkTheme = false)
-}
-
-@Preview(name = "Footnote Dark", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyFootnoteDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().footnote, darkTheme = true)
-}
-
-@Preview(name = "Caption Light", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyCaptionLightPreview() {
-    PommeTypographyStylePreview(PommeTypography().caption, darkTheme = false)
-}
-
-@Preview(name = "Caption Dark", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyCaptionDarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().caption, darkTheme = true)
-}
-
-@Preview(name = "Caption 2 Light", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyCaption2LightPreview() {
-    PommeTypographyStylePreview(PommeTypography().caption2, darkTheme = false)
-}
-
-@Preview(name = "Caption 2 Dark", showBackground = true, widthDp = 360, heightDp = 96)
-@Composable
-internal fun PommeTypographyCaption2DarkPreview() {
-    PommeTypographyStylePreview(PommeTypography().caption2, darkTheme = true)
+internal fun PommeTypographyCaption2Preview() {
+    PommeTypographyStylePreview(PommeTypography().caption2)
 }

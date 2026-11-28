@@ -1,319 +1,123 @@
 package com.studiomk.pomme.sample
 
-import android.content.res.Configuration
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
 import com.studiomk.pomme.PommeTypography
 
-@PreviewTest
 @Preview(
-    name = "PommeColorScheme Light",
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
     showBackground = true,
     widthDp = 360,
     heightDp = 480,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
-@Composable
-fun PommeColorSchemeLightScreenshotTest() {
-    PommeColorSchemeScreenshotPreview(darkTheme = false)
-}
-
-@PreviewTest
 @Preview(
-    name = "PommeColorScheme Dark",
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
     showBackground = true,
     widthDp = 360,
     heightDp = 480,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
-@Composable
-fun PommeColorSchemeDarkScreenshotTest() {
-    PommeColorSchemeScreenshotPreview(darkTheme = true)
-}
+internal annotation class PommeColorSchemeScreenshotPreviews
 
-@PreviewTest
 @Preview(
-    name = "Large Title Light",
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
     showBackground = true,
     widthDp = 360,
     heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
 )
-@Composable
-fun PommeTypographyLargeTitleLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().largeTitle, darkTheme = false)
-}
-
-@PreviewTest
 @Preview(
-    name = "Large Title Dark",
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
     showBackground = true,
     widthDp = 360,
     heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
+internal annotation class PommeTypographyScreenshotPreviews
+
+@PreviewTest
+@PommeColorSchemeScreenshotPreviews
 @Composable
-fun PommeTypographyLargeTitleDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().largeTitle, darkTheme = true)
+fun PommeColorSchemeScreenshotTest() {
+    PommeColorSchemeScreenshotFixture()
 }
 
 @PreviewTest
-@Preview(
-    name = "Title Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyTitleLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().title, darkTheme = false)
+fun PommeTypographyLargeTitleScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().largeTitle)
 }
 
 @PreviewTest
-@Preview(
-    name = "Title Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyTitleDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().title, darkTheme = true)
+fun PommeTypographyTitleScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().title)
 }
 
 @PreviewTest
-@Preview(
-    name = "Title 2 Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyTitle2LightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().title2, darkTheme = false)
+fun PommeTypographyTitle2ScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().title2)
 }
 
 @PreviewTest
-@Preview(
-    name = "Title 2 Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyTitle2DarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().title2, darkTheme = true)
+fun PommeTypographyTitle3ScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().title3)
 }
 
 @PreviewTest
-@Preview(
-    name = "Title 3 Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyTitle3LightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().title3, darkTheme = false)
+fun PommeTypographyHeadlineScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().headline)
 }
 
 @PreviewTest
-@Preview(
-    name = "Title 3 Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyTitle3DarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().title3, darkTheme = true)
+fun PommeTypographyBodyScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().body)
 }
 
 @PreviewTest
-@Preview(
-    name = "Headline Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyHeadlineLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().headline, darkTheme = false)
+fun PommeTypographyCalloutScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().callout)
 }
 
 @PreviewTest
-@Preview(
-    name = "Headline Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyHeadlineDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().headline, darkTheme = true)
+fun PommeTypographySubheadlineScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().subheadline)
 }
 
 @PreviewTest
-@Preview(
-    name = "Body Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyBodyLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().body, darkTheme = false)
+fun PommeTypographyFootnoteScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().footnote)
 }
 
 @PreviewTest
-@Preview(
-    name = "Body Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyBodyDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().body, darkTheme = true)
+fun PommeTypographyCaptionScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().caption)
 }
 
 @PreviewTest
-@Preview(
-    name = "Callout Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
+@PommeTypographyScreenshotPreviews
 @Composable
-fun PommeTypographyCalloutLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().callout, darkTheme = false)
-}
-
-@PreviewTest
-@Preview(
-    name = "Callout Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-fun PommeTypographyCalloutDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().callout, darkTheme = true)
-}
-
-@PreviewTest
-@Preview(
-    name = "Subheadline Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-@Composable
-fun PommeTypographySubheadlineLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().subheadline, darkTheme = false)
-}
-
-@PreviewTest
-@Preview(
-    name = "Subheadline Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-fun PommeTypographySubheadlineDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().subheadline, darkTheme = true)
-}
-
-@PreviewTest
-@Preview(
-    name = "Footnote Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-@Composable
-fun PommeTypographyFootnoteLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().footnote, darkTheme = false)
-}
-
-@PreviewTest
-@Preview(
-    name = "Footnote Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-fun PommeTypographyFootnoteDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().footnote, darkTheme = true)
-}
-
-@PreviewTest
-@Preview(
-    name = "Caption Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-@Composable
-fun PommeTypographyCaptionLightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().caption, darkTheme = false)
-}
-
-@PreviewTest
-@Preview(
-    name = "Caption Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-fun PommeTypographyCaptionDarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().caption, darkTheme = true)
-}
-
-@PreviewTest
-@Preview(
-    name = "Caption 2 Light",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-)
-@Composable
-fun PommeTypographyCaption2LightScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().caption2, darkTheme = false)
-}
-
-@PreviewTest
-@Preview(
-    name = "Caption 2 Dark",
-    showBackground = true,
-    widthDp = 360,
-    heightDp = 96,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-fun PommeTypographyCaption2DarkScreenshotTest() {
-    PommeTypographyScreenshotPreview(PommeTypography().caption2, darkTheme = true)
+fun PommeTypographyCaption2ScreenshotTest() {
+    PommeTypographyScreenshotFixture(PommeTypography().caption2)
 }
