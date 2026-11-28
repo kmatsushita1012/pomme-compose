@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -128,6 +129,35 @@ internal fun PommeThemeScreenshotFixture() {
                 Text(text = "Default body text")
                 Text(text = "Explicit title style", style = PommeTheme.typography.title)
                 Text(text = "Explicit bold weight", fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
+@Composable
+internal fun PommeLocalContentColorScreenshotFixture() {
+    val darkTheme = isSystemInDarkTheme()
+
+    MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
+        PommeTheme {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PommeTheme.colorScheme.background)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(text = "Material3 Surface content color")
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = Color.Black,
+                    contentColor = Color.White,
+                ) {
+                    Text(
+                        text = "Inherits white LocalContentColor",
+                        modifier = Modifier.padding(12.dp),
+                    )
+                }
             }
         }
     }
