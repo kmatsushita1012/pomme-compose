@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -73,8 +72,8 @@ private fun PommeTypographySampleLine(label: String, style: TextStyle, labelStyl
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        BasicText(text = label, modifier = Modifier.width(84.dp), style = labelStyle)
-        BasicText(text = "Sample text", style = style)
+        Text(text = label, modifier = Modifier.width(84.dp), style = labelStyle)
+        Text(text = "Sample text", style = style)
     }
 }
 
