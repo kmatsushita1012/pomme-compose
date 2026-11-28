@@ -1,19 +1,15 @@
 package com.studiomk.pomme.sample
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -21,13 +17,13 @@ import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.studiomk.pomme.PommeColorScheme
@@ -47,36 +43,28 @@ class PommeRowsLayoutTest {
 
     @Test
     fun directLayoutNodesAreRowsAndStandardLayoutsGroupTheirChildren() {
+        val showOptionalRow = mutableStateOf(false)
         composeRule.setContent {
             PommeTestTheme {
-                var showOptionalRow by remember { mutableStateOf(false) }
-                Column {
-                    TextButton(
-                        modifier = Modifier.testTag("toggle-row"),
-                        onClick = { showOptionalRow = !showOptionalRow },
-                    ) {
-                        Text("Toggle row")
+                PommeRowsLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("rows"),
+                    metrics = testMetrics,
+                    surfaceColor = Color.White,
+                ) {
+                    Text("First direct node")
+                    if (showOptionalRow.value) Text("Conditional direct node")
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text("Grouped left")
+                        Text("Grouped right")
                     }
-                    PommeRowsLayout(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag("rows"),
-                        metrics = testMetrics,
-                        surfaceColor = Color.White,
-                    ) {
-                        Text("First direct node")
-                        if (showOptionalRow) Text("Conditional direct node")
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Text("Grouped left")
-                            Text("Grouped right")
-                        }
-                    }
-                    PommeRowsLayout(
-                        modifier = Modifier.testTag("empty-rows"),
-                        metrics = testMetrics,
-                        surfaceColor = null,
-                    ) {}
                 }
+                PommeRowsLayout(
+                    modifier = Modifier.testTag("empty-rows"),
+                    metrics = testMetrics,
+                    surfaceColor = null,
+                ) {}
             }
         }
 
@@ -87,7 +75,7 @@ class PommeRowsLayoutTest {
         composeRule.onNodeWithTag("rows").assertHeightIsEqualTo(88.dp)
         composeRule.onNodeWithTag("empty-rows").assertHeightIsEqualTo(0.dp)
 
-        composeRule.onNodeWithTag("toggle-row").performClick()
+        composeRule.runOnIdle { showOptionalRow.value = true }
 
         composeRule.onNodeWithText("Conditional direct node").assertExists()
         composeRule.onNodeWithTag("rows").assertHeightIsAtLeast(132.dp)
@@ -95,30 +83,22 @@ class PommeRowsLayoutTest {
 
     @Test
     fun focusedInputAndValueSurviveConditionalInsertion() {
+        val showOptionalRow = mutableStateOf(false)
+        val editorValue = mutableStateOf("")
         composeRule.setContent {
             PommeTestTheme {
-                var showOptionalRow by remember { mutableStateOf(false) }
-                var value by remember { mutableStateOf("") }
-                Column {
-                    TextButton(
-                        modifier = Modifier.testTag("insert-before-editor"),
-                        onClick = { showOptionalRow = true },
-                    ) {
-                        Text("Insert before editor")
-                    }
-                    PommeRowsLayout(
-                        modifier = Modifier.fillMaxWidth(),
-                        metrics = testMetrics,
-                        surfaceColor = Color.White,
-                    ) {
-                        if (showOptionalRow) Text("Inserted row")
-                        key("editor") {
-                            BasicTextField(
-                                value = value,
-                                onValueChange = { value = it },
-                                modifier = Modifier.testTag("editor"),
-                            )
-                        }
+                PommeRowsLayout(
+                    modifier = Modifier.fillMaxWidth(),
+                    metrics = testMetrics,
+                    surfaceColor = Color.White,
+                ) {
+                    if (showOptionalRow.value) Text("Inserted row")
+                    key("editor") {
+                        BasicTextField(
+                            value = editorValue.value,
+                            onValueChange = { editorValue.value = it },
+                            modifier = Modifier.testTag("editor"),
+                        )
                     }
                 }
             }
@@ -126,7 +106,7 @@ class PommeRowsLayoutTest {
 
         composeRule.onNodeWithTag("editor").performClick()
         composeRule.onNodeWithTag("editor").performTextInput("kept")
-        composeRule.onNodeWithTag("insert-before-editor").performClick()
+        composeRule.runOnIdle { showOptionalRow.value = true }
 
         composeRule.onNodeWithTag("editor").assertIsFocused()
         composeRule.onNodeWithTag("editor").assertTextEquals("kept")
@@ -134,48 +114,40 @@ class PommeRowsLayoutTest {
 
     @Test
     fun lazyRowsRenderVisibleItemsAndKeepKeyedStateAfterInsertion() {
+        val rows = mutableStateOf((0 until 500).toList())
         composeRule.setContent {
             PommeTestTheme {
-                var rows by remember { mutableStateOf((0 until 500).toList()) }
-                Column {
-                    TextButton(
-                        modifier = Modifier.testTag("prepend-row"),
-                        onClick = { rows = listOf(-1) + rows },
-                    ) {
-                        Text("Prepend row")
-                    }
-                    PommeLazyRows(
-                        items = rows.map { index ->
-                            PommeLazyRowItem(key = index) {
-                                if (index == 0) {
-                                    var value by remember { mutableStateOf("Row 0") }
-                                    BasicTextField(
-                                        value = value,
-                                        onValueChange = { value = it },
-                                        modifier = Modifier.testTag("lazy-editor"),
-                                    )
-                                } else {
-                                    Row(modifier = Modifier.fillMaxWidth()) {
-                                        Text("Row $index")
-                                    }
+                PommeLazyRows(
+                    items = rows.value.map { index ->
+                        PommeLazyRowItem(key = index) {
+                            if (index == 0) {
+                                val value = remember { mutableStateOf("Row 0") }
+                                BasicTextField(
+                                    value = value.value,
+                                    onValueChange = { value.value = it },
+                                    modifier = Modifier.testTag("lazy-editor"),
+                                )
+                            } else {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Text("Row $index")
                                 }
                             }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                            .testTag("lazy-rows"),
-                        metrics = testMetrics,
-                        surfaceColor = Color.White,
-                    )
-                }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .testTag("lazy-rows"),
+                    metrics = testMetrics,
+                    surfaceColor = Color.White,
+                )
             }
         }
 
         composeRule.onNodeWithTag("lazy-editor").performClick()
         composeRule.onNodeWithTag("lazy-editor").performTextInput(" kept")
         composeRule.onNodeWithTag("lazy-editor").assertTextEquals("Row 0 kept")
-        composeRule.onNodeWithTag("prepend-row").performClick()
+        composeRule.runOnIdle { rows.value = listOf(-1) + rows.value }
         composeRule.onNodeWithTag("lazy-editor").assertTextEquals("Row 0 kept")
         composeRule.onNodeWithText("Row 499").assertDoesNotExist()
         composeRule.onNodeWithTag("lazy-rows").performScrollToNode(hasText("Row 499"))

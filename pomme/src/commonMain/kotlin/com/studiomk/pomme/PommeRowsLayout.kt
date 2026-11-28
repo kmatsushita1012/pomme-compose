@@ -13,21 +13,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureScope
@@ -60,13 +59,15 @@ internal fun PommeRowsLayout(
     modifier: Modifier = Modifier,
     metrics: PommeRowMetrics,
     surfaceColor: Color?,
+    surfaceShape: Shape? = null,
     drawTrailingDivider: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val dividerPositions = remember { mutableListOf<Float>() }
+    val surfaceModifier = surfaceShape?.let(modifier::clip) ?: modifier
 
     Layout(
-        modifier = modifier.drawWithContent {
+        modifier = surfaceModifier.drawWithContent {
             surfaceColor?.let { drawRect(color = it) }
             drawContent()
 
@@ -110,9 +111,17 @@ internal fun PommeLazyRows(
     modifier: Modifier = Modifier,
     metrics: PommeRowMetrics,
     surfaceColor: Color,
+    surfaceShape: Shape? = null,
 ) {
+    val surfaceModifier = if (surfaceShape == null) {
+        modifier.background(surfaceColor)
+    } else {
+        modifier
+            .clip(surfaceShape)
+            .background(surfaceColor, surfaceShape)
+    }
     LazyColumn(
-        modifier = modifier.background(surfaceColor),
+        modifier = surfaceModifier,
     ) {
         itemsIndexed(
             items = items,
@@ -197,6 +206,8 @@ private val PommeRowsPreviewMetrics = PommeRowMetrics(
     dividerColor = Color(0x4D8E8E93),
 )
 
+private val PommeSectionPreviewShape = RoundedCornerShape(24.dp)
+
 @Preview(
     name = "Light",
     uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
@@ -222,7 +233,6 @@ internal fun PommeRowsLayoutPreview() {
         },
     ) {
         PommeTheme {
-            var showOptionalRow by remember { mutableStateOf(true) }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -231,15 +241,13 @@ internal fun PommeRowsLayoutPreview() {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text("Direct children and grouped layouts", style = PommeTheme.typography.headline)
-                TextButton(onClick = { showOptionalRow = !showOptionalRow }) {
-                    Text(if (showOptionalRow) "Hide optional row" else "Show optional row")
-                }
                 PommeRowsLayout(
                     modifier = Modifier.fillMaxWidth(),
                     metrics = PommeRowsPreviewMetrics.copy(
                         dividerColor = PommeTheme.colorScheme.secondary.copy(alpha = 0.35f),
                     ),
                     surfaceColor = PommeTheme.colorScheme.secondaryGroupedBackground,
+                    surfaceShape = PommeSectionPreviewShape,
                 ) {
                     Text("Direct Text child")
                     Row(
@@ -257,7 +265,7 @@ internal fun PommeRowsLayoutPreview() {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                         Text("Grouped in a Box")
                     }
-                    if (showOptionalRow) Text("Conditional direct child")
+                    Text("Conditional direct child")
                     Text(
                         "Long text wraps within the row and increases its height when needed.",
                         maxLines = 2,
@@ -320,6 +328,7 @@ internal fun PommeLazyRowsPreview() {
                         dividerColor = PommeTheme.colorScheme.secondary.copy(alpha = 0.35f),
                     ),
                     surfaceColor = PommeTheme.colorScheme.secondaryGroupedBackground,
+                    surfaceShape = PommeSectionPreviewShape,
                 )
             }
         }
