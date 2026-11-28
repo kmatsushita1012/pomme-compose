@@ -40,6 +40,7 @@ pomme-compose/
 | Android Gradle Plugin | 8.11.1 |
 | Kotlin / Compose Compiler Gradle Plugin | 2.2.20 |
 | Compose Multiplatform plugin / libraries | 1.10.3 |
+| Compose Multiplatform Material 3 (PommeTheme implementation) | 1.9.0 |
 | AndroidX Compose BOM | 2026.06.01（Android サンプル依存） |
 | JDK / JVM target | 21 |
 | compileSdk | 36 |
@@ -48,7 +49,7 @@ pomme-compose/
 | ライブラリ namespace | `com.studiomk.pomme` |
 | サンプル namespace / applicationId | `com.studiomk.pomme.sample` |
 
-AGP 8.11.1 は Gradle 8.13 と API 36 をサポートし、Kotlin 2.2.20 と組み合わせる。`:pomme` は既存の AGP 8 構成と互換性のある `com.android.library` plugin に Kotlin Multiplatform の `androidTarget()` を追加する。Compose Multiplatform 1.10.3 の依存は Version Catalog で管理し、Android サンプル側の AndroidX Compose 依存は BOM 2026.06.01 で揃える。ライブラリは Compose Runtime / UI / Foundation を公開依存とし、Material 3 は必要なコンポーネント Issue で判断する。iOS 等のターゲット追加、リリース、配布方式は別 Issue で扱う。
+AGP 8.11.1 は Gradle 8.13 と API 36 をサポートし、Kotlin 2.2.20 と組み合わせる。`:pomme` は既存の AGP 8 構成と互換性のある `com.android.library` plugin に Kotlin Multiplatform の `androidTarget()` を追加する。Compose Multiplatform 1.10.3 と Material 3 1.9.0 の依存は Version Catalog で管理し、Android サンプル側の AndroidX Compose 依存は BOM 2026.06.01 で揃える。ライブラリは Compose Runtime / UI / Foundation を公開依存とし、PommeTheme は標準 Text へ既定書体と主テキスト色を伝えるため Compose Multiplatform の Material 3 `ProvideTextStyle` / `LocalContentColor` を実装依存として利用する。その他の Material 3 依存は必要なコンポーネント Issue で判断する。iOS 等のターゲット追加、リリース、配布方式は別 Issue で扱う。
 
 ライブラリ本体はテーマ、入力、リスト、スクリーン、必要なモーダル表示・アイコン等の責務で整理する。具体的なパッケージ構成と公開・非公開の境界は詳細設計で確定する。初期の Gradle モジュール分割はライブラリ本体とサンプルアプリを基本とし、コンポーネント単位での細分化を目的としない。
 
@@ -56,7 +57,7 @@ AGP 8.11.1 は Gradle 8.13 と API 36 をサポートし、Kotlin 2.2.20 と組�
 
 - サンプルアプリ → Pomme ライブラリ → Jetpack Compose。
 - ライブラリ本体はサンプルアプリや MaTool に依存しない。
-- Compose Foundation、Runtime、UI 等を基本とし、Material 3 の既存コンポーネントを再利用できる場合は利用する。ただし外観・挙動が要件を満たすこと。
+- Compose Foundation、Runtime、UI 等を基本とし、Material 3 の既存コンポーネントを再利用できる場合は利用する。ただし外観・挙動が要件を満たすこと。PommeTheme は標準 Text との統合に `ProvideTextStyle` と `LocalContentColor` を使うが、Material 3 の型は公開 API に含めない。
 - cupertino-compose への依存は禁止。新しい外部 UI ライブラリの追加は理由を明示して設計上の合意を得る。
 - Kotlin Multiplatform / Compose Multiplatform の共通実装は `commonMain`、共通テストは `commonTest` に置く。Android 固有コードと manifest は `androidMain` に置き、追加ターゲットは別 Issue で設計する。
 - Android の依存バージョンと Gradle プラグインは「初期ビルド構成」に従う。配布方式は後続設計の対象とし、JitPack によるタグ配布は候補に留める。
@@ -65,8 +66,9 @@ AGP 8.11.1 は Gradle 8.13 と API 36 をサポートし、Kotlin 2.2.20 と組�
 flowchart LR
     sample[":sample"] --> pomme[":pomme"]
     pomme --> compose["Compose Runtime / UI / Foundation"]
+    pomme --> material3["Material 3"]
     sample --> activity["Activity Compose"]
-    sample --> material3["Material 3"]
+    sample --> material3
 ```
 
 ## ファイルと実装単位

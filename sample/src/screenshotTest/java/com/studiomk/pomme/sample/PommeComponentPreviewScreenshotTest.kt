@@ -38,11 +38,80 @@ internal annotation class PommeColorSchemeScreenshotPreviews
 )
 internal annotation class PommeTypographyScreenshotPreviews
 
+@Preview(
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 480,
+)
+@Preview(
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 480,
+)
+internal annotation class PommeThemeScreenshotPreviews
+
+@Preview(
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 180,
+)
+@Preview(
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 180,
+)
+internal annotation class PommeLocalContentColorScreenshotPreviews
+
+@Preview(
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 480,
+)
+@Preview(
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 480,
+)
+internal annotation class PommeThemeOverrideScreenshotPreviews
+
 @PreviewTest
 @PommeColorSchemeScreenshotPreviews
 @Composable
 fun PommeColorSchemeScreenshotTest() {
     PommeColorSchemeScreenshotFixture()
+}
+
+@PreviewTest
+@PommeThemeScreenshotPreviews
+@Composable
+fun PommeThemeScreenshotTest() {
+    PommeThemeScreenshotFixture()
+}
+
+@PreviewTest
+@PommeLocalContentColorScreenshotPreviews
+@Composable
+fun PommeLocalContentColorScreenshotTest() {
+    PommeLocalContentColorScreenshotFixture()
+}
+
+@PreviewTest
+@PommeThemeOverrideScreenshotPreviews
+@Composable
+fun PommeThemeOverrideScreenshotTest() {
+    PommeThemeOverrideScreenshotFixture()
 }
 
 @PreviewTest

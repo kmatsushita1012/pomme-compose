@@ -24,11 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.studiomk.pomme.PommeColorScheme
-import com.studiomk.pomme.PommeTypography
+import com.studiomk.pomme.PommeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,69 +41,76 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 internal fun PommeSampleContent(darkTheme: Boolean) {
-    val colorScheme = if (darkTheme) PommeColorScheme.dark() else PommeColorScheme.light()
-
     MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = colorScheme.background,
-            contentColor = colorScheme.primary,
-        ) {
-            val typography = PommeTypography()
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .safeDrawingPadding()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+        PommeTheme {
+            val colorScheme = PommeTheme.colorScheme
+            val typography = PommeTheme.typography
+
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = colorScheme.background,
+                contentColor = colorScheme.primary,
             ) {
-                Text(text = "PommeTypography", style = typography.headline)
-                PommeTypographySampleLine("largeTitle", typography.largeTitle, typography.caption2)
-                PommeTypographySampleLine("title", typography.title, typography.caption2)
-                PommeTypographySampleLine("title2", typography.title2, typography.caption2)
-                PommeTypographySampleLine("title3", typography.title3, typography.caption2)
-                PommeTypographySampleLine("headline", typography.headline, typography.caption2)
-                PommeTypographySampleLine("body", typography.body, typography.caption2)
-                PommeTypographySampleLine("callout", typography.callout, typography.caption2)
-                PommeTypographySampleLine("subheadline", typography.subheadline, typography.caption2)
-                PommeTypographySampleLine("footnote", typography.footnote, typography.caption2)
-                PommeTypographySampleLine("caption", typography.caption, typography.caption2)
-                PommeTypographySampleLine("caption2", typography.caption2, typography.caption2)
-
-                Text(
-                    text = "PommeColorScheme",
-                    color = colorScheme.primary,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(top = 16.dp),
-                )
-                Text(text = "Primary text", color = colorScheme.primary)
-                Text(text = "Secondary text", color = colorScheme.secondary)
-
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = colorScheme.groupedBackground,
-                    shape = RoundedCornerShape(16.dp),
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .safeDrawingPadding()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    Text(text = "PommeTheme", style = typography.headline)
+                    Text(text = "Default body text")
+                    Text(text = "Explicit title style", style = typography.title)
+                    Text(text = "Explicit bold weight", fontWeight = FontWeight.Bold)
+
+                    Text(text = "PommeTypography", style = typography.headline)
+                    PommeTypographySampleLine("largeTitle", typography.largeTitle, typography.caption2)
+                    PommeTypographySampleLine("title", typography.title, typography.caption2)
+                    PommeTypographySampleLine("title2", typography.title2, typography.caption2)
+                    PommeTypographySampleLine("title3", typography.title3, typography.caption2)
+                    PommeTypographySampleLine("headline", typography.headline, typography.caption2)
+                    PommeTypographySampleLine("body", typography.body, typography.caption2)
+                    PommeTypographySampleLine("callout", typography.callout, typography.caption2)
+                    PommeTypographySampleLine("subheadline", typography.subheadline, typography.caption2)
+                    PommeTypographySampleLine("footnote", typography.footnote, typography.caption2)
+                    PommeTypographySampleLine("caption", typography.caption, typography.caption2)
+                    PommeTypographySampleLine("caption2", typography.caption2, typography.caption2)
+
+                    Text(
+                        text = "PommeColorScheme",
+                        color = colorScheme.primary,
+                        style = typography.headline,
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
+                    Text(text = "Primary text", color = colorScheme.primary)
+                    Text(text = "Secondary text", color = colorScheme.secondary)
+
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = colorScheme.groupedBackground,
+                        shape = RoundedCornerShape(16.dp),
                     ) {
-                        Text(text = "Grouped background", color = colorScheme.primary)
-                        Surface(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = colorScheme.secondaryGroupedBackground,
-                            shape = RoundedCornerShape(12.dp),
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            Text(text = "Grouped background", color = colorScheme.primary)
+                            Surface(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = colorScheme.secondaryGroupedBackground,
+                                shape = RoundedCornerShape(12.dp),
                             ) {
-                                Text(
-                                    text = "Secondary grouped background",
-                                    color = colorScheme.primary,
-                                )
-                                Text(text = "Accent color", color = colorScheme.accentColor)
+                                Column(
+                                    modifier = Modifier.padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    Text(
+                                        text = "Secondary grouped background",
+                                        color = colorScheme.primary,
+                                    )
+                                    Text(text = "Accent color", color = colorScheme.accentColor)
+                                }
                             }
                         }
                     }
