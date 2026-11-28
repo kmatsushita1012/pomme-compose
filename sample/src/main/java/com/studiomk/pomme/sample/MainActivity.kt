@@ -21,6 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -29,6 +33,7 @@ import androidx.compose.ui.tooling.preview.AndroidUiModes
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.studiomk.pomme.PommeTheme
+import com.studiomk.pomme.PommeSlider
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,8 @@ internal fun PommeSampleContent(darkTheme: Boolean) {
         PommeTheme {
             val colorScheme = PommeTheme.colorScheme
             val typography = PommeTheme.typography
+            var sliderValue by remember { mutableFloatStateOf(0.64f) }
+            var steppedSliderValue by remember { mutableFloatStateOf(0.6f) }
 
             Surface(
                 modifier = Modifier.fillMaxSize(),
@@ -114,6 +121,33 @@ internal fun PommeSampleContent(darkTheme: Boolean) {
                             }
                         }
                     }
+
+                    Text(
+                        text = "PommeSlider",
+                        color = colorScheme.primary,
+                        style = typography.headline,
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
+                    Text(text = "Continuous · ${sliderValue.toInt()}%", color = colorScheme.secondary)
+                    PommeSlider(
+                        value = sliderValue,
+                        onValueChange = { sliderValue = it },
+                        valueRange = 0f..100f,
+                        minimumValueLabel = { Text("0%", style = typography.caption) },
+                        maximumValueLabel = { Text("100%", style = typography.caption) },
+                    )
+                    Text(text = "Stepped · ${steppedSliderValue}", color = colorScheme.secondary)
+                    PommeSlider(
+                        value = steppedSliderValue,
+                        onValueChange = { steppedSliderValue = it },
+                        step = 0.2f,
+                    )
+                    Text(text = "Disabled", color = colorScheme.secondary)
+                    PommeSlider(
+                        value = 0.42f,
+                        onValueChange = {},
+                        enabled = false,
+                    )
                 }
             }
         }
