@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.studiomk.pomme.PommeColorScheme
+import com.studiomk.pomme.PommeTheme
+import com.studiomk.pomme.PommeTypography
 import kotlin.math.roundToInt
 
 @Composable
@@ -99,6 +105,57 @@ internal fun PommeTypographyScreenshotFixture(style: TextStyle) {
                 color = if (darkTheme) Color(0xFFE6E1E5) else Color(0xFF1B1B1B),
             ),
         )
+    }
+}
+
+@Composable
+internal fun PommeThemeScreenshotFixture() {
+    val darkTheme = isSystemInDarkTheme()
+
+    MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
+        PommeTheme {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(PommeTheme.colorScheme.background)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "System ${if (darkTheme) "Dark" else "Light"}",
+                    style = PommeTheme.typography.headline,
+                )
+                Text(text = "Default body text")
+                Text(text = "Explicit title style", style = PommeTheme.typography.title)
+                Text(text = "Explicit bold weight", fontWeight = FontWeight.Bold)
+
+                PommeTheme(
+                    colorScheme = PommeColorScheme.light().copy(
+                        accentColor = Color(0xFF006B8F),
+                        primary = Color(0xFF003B57),
+                        secondary = Color(0xFF3D5968),
+                        background = Color(0xFFEAF6FF),
+                        groupedBackground = Color(0xFFD7EEFF),
+                    ),
+                    typography = PommeTypography(
+                        body = PommeTypography().body.copy(fontSize = 20.sp, lineHeight = 26.sp),
+                    ),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(PommeTheme.colorScheme.background)
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(text = "Nested explicit theme", style = PommeTheme.typography.headline)
+                        Text(text = "Overridden body text")
+                    }
+                }
+
+                Text(text = "Outer theme restored")
+            }
+        }
     }
 }
 

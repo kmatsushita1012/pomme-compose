@@ -42,6 +42,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.compose.mp.foundation)
+            implementation(libs.compose.mp.material3)
             api(libs.compose.mp.runtime)
             api(libs.compose.mp.ui)
             implementation(libs.compose.mp.ui.tooling.preview)

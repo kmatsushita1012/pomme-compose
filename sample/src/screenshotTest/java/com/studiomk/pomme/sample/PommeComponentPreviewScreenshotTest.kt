@@ -38,11 +38,34 @@ internal annotation class PommeColorSchemeScreenshotPreviews
 )
 internal annotation class PommeTypographyScreenshotPreviews
 
+@Preview(
+    name = "Light",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_NO,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 480,
+)
+@Preview(
+    name = "Dark",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 480,
+)
+internal annotation class PommeThemeScreenshotPreviews
+
 @PreviewTest
 @PommeColorSchemeScreenshotPreviews
 @Composable
 fun PommeColorSchemeScreenshotTest() {
     PommeColorSchemeScreenshotFixture()
+}
+
+@PreviewTest
+@PommeThemeScreenshotPreviews
+@Composable
+fun PommeThemeScreenshotTest() {
+    PommeThemeScreenshotFixture()
 }
 
 @PreviewTest
