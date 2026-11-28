@@ -39,16 +39,18 @@
 
 ## テーマ・カラースキーム
 
-ライトモード・ダークモードに対応し、次の4つの意味を持つ色を提供できること。ここで示す名称は UIKit の参照名称または意味の識別名であり、Pomme の公開プロパティ名ではない。
+ライトモード・ダークモードに対応し、次の6つの意味を持つ色を提供する。役割名は UIKit / SwiftUI の意味に合わせ、Pomme の公開プロパティ名も併記する。
 
-| 色の役割 | iOS の参照 | 用途 |
+| 色の役割 | iOS の参照 | Pomme プロパティ | 用途 |
 | --- | --- | --- |
-| アクセントカラー（Blue） | systemBlue / tint | ボタン、リンク、選択可能な操作要素 |
-| 通常背景 | systemBackground | Form 等ではない通常画面の背景 |
-| グループ化された背景 | systemGroupedBackground | Form・グループ化された List の全体背景 |
-| セクション背景 | secondarySystemGroupedBackground | グループ化された Section の内部背景 |
+| アクセントカラー（Blue） | systemBlue / tint | accentColor | ボタン、リンク、選択可能な操作要素 |
+| 主テキスト | Color.primary / label | primary | 主となるテキスト |
+| 副テキスト | Color.secondary / secondaryLabel | secondary | 補足となるテキスト |
+| 通常背景 | systemBackground | background | Form 等ではない通常画面の背景 |
+| グループ化された背景 | systemGroupedBackground | groupedBackground | Form・グループ化された List の全体背景 |
+| セクション背景 | secondarySystemGroupedBackground | secondaryGroupedBackground | グループ化された Section の内部背景 |
 
-従来の iOS 標準色を参考にした配色候補は以下のとおり。正確な色値は対象 iOS の検証を踏まえ、詳細設計で確定する。
+以下の背景色は UIKit の `systemBackground`、`systemGroupedBackground`、`secondarySystemGroupedBackground` を Light / Dark で解決して確認した値を既定値として採用する。Light では `background` と `secondaryGroupedBackground` がどちらも白になる。3役割が常に異なる色になるとは限らない。
 
 | 役割 | Light | Dark |
 | --- | --- | --- |
@@ -57,7 +59,14 @@
 | グループ背景 | #F2F2F7 | #000000 |
 | セクション背景 | #FFFFFF | #1C1C1E |
 
-初期の公開カラースキームはこの4役割を基本とする。文字、区切り線、プレースホルダー、無効状態、エラー等に必要な内部色は標準機能を活用し、公開色の増設を当然としない。壁紙由来の Dynamic Color で意図した配色を上書きしない。Material 3 を利用する箇所もテーマと整合させる。
+主テキストと副テキストは次の不透明度を使う。
+
+| 役割 | Light | Dark |
+| --- | --- | --- |
+| primary | #000000 / 85% | #FFFFFF / 85% |
+| secondary | #000000 / 55% | #FFFFFF / 55% |
+
+初期の公開カラースキームはこの6役割を提供する。区切り線、プレースホルダー、無効状態、エラー等に必要な内部色は標準機能を活用し、公開色の増設を当然としない。壁紙由来の Dynamic Color で意図した配色を上書きしない。Material 3 を利用する箇所もテーマと整合させる。
 
 ## Typography
 

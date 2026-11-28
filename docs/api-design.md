@@ -289,7 +289,7 @@ PommeTheme {
 }
 ```
 
-- PommeTheme / PommeColorScheme / PommeTypography の名称は確定済み。色の役割は requirements.md の4色（accentColor、通常背景、グループ背景、セクション背景）を維持する。背景色プロパティ名・値の最終確定はテーマ詳細設計で行う。
+- PommeTheme / PommeColorScheme / PommeTypography の名称は確定済み。PommeColorScheme は requirements.md の6役割（accentColor、primary、secondary、background、groupedBackground、secondaryGroupedBackground）を提供する。primary / secondary は Light で黒を85% / 55%、Dark で白を85% / 55%の不透明度で使用する。背景色プロパティ名と既定値も requirements.md の表に従う。
 - SwiftUI の tint、disabled、buttonStyle、pickerStyle 等は見た目だけでなく適用範囲・優先順位を参照する。Compose の標準機能で同じ意味を表現できる場合はそれを使う。
 - Scope は構造・配置、CompositionLocal は親から子への表示文脈、Modifier は個別要素の調整、Composable は実際の UI。Modifier が子孫への環境伝達を自動的に行うとは仮定しない。
 - 明示的なスタイルは文脈による既定スタイルに優先する。無効状態・アクセシビリティを失わせない。スタイルを指定する公開手段は詳細設計で決める。
